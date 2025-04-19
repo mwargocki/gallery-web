@@ -28,7 +28,7 @@
     background-color: #0056b3;
 }
 
-/* Zmniejszenie marginesów na telefonach */
+/* Responsywność: zmniejsz odstępy w nagłówku */
 @media (max-width: 768px) {
     .header {
         flex-direction: column;

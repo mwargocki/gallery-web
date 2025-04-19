@@ -31,7 +31,7 @@
     border-radius: 4px;
 }
 
-/* Na telefonach: pełna szerokość */
+/* Responsywność: na telefonie Sidebar na pełną szerokość */
 @media (max-width: 768px) {
     .sidebar {
         width: 100%;

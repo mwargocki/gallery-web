@@ -5,6 +5,7 @@
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: #f8f9fa;
     color: #333;
+    margin: 0;
 }
 
 .main {
@@ -13,7 +14,7 @@
     overflow: hidden;
 }
 
-/* Na małych ekranach: pionowo */
+/* Responsywność: na telefonie filtry u góry */
 @media (max-width: 768px) {
     .main {
         flex-direction: column;
