@@ -5,13 +5,14 @@
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: #f8f9fa;
     color: #333;
-    margin: 0;
 }
 
 .main {
     display: flex;
     flex: 1;
-    overflow: hidden;
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 /* Responsywność: na telefonie filtry u góry */

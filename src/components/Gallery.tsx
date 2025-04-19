@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react';
+// Gallery.tsx (poprawka: blokowanie wielokrotnych zapytań przy tym samym page)
+import { useEffect, useState, useRef, useCallback } from 'react';
 import './Gallery.css';
 import { Photo } from '../types';
 import PhotoModal from './PhotoModal';
@@ -14,50 +15,95 @@ interface GalleryProps {
 function Gallery({ filters }: GalleryProps) {
     const [photos, setPhotos] = useState<Photo[]>([]);
     const [loading, setLoading] = useState(true);
+    const [loadingMore, setLoadingMore] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [selectedPhoto, setSelectedPhoto] = useState<Photo | null>(null);
     const [photoToDelete, setPhotoToDelete] = useState<Photo | null>(null);
     const [photoToEdit, setPhotoToEdit] = useState<Photo | null>(null);
-    const [refreshKey, setRefreshKey] = useState(0);
+    const [page, setPage] = useState(0);
+    const [hasMore, setHasMore] = useState(true);
+    const lastFetchedPage = useRef<number | null>(null);
 
-    const fetchPhotos = (activeFilters: Filters) => {
-        setLoading(true);
+    const observer = useRef<IntersectionObserver | null>(null);
+    const loadMoreRef = useRef<HTMLDivElement>(null);
+
+    const fetchPhotos = useCallback((pageToLoad: number, reset = false) => {
+        if (!reset && lastFetchedPage.current === pageToLoad) return;
+        lastFetchedPage.current = pageToLoad;
 
         const params = new URLSearchParams();
-        if (activeFilters.color) params.append('color', activeFilters.color);
-        if (activeFilters.type) params.append('type', activeFilters.type);
-        if (activeFilters.material) params.append('material', activeFilters.material);
-        if (activeFilters.minHeight) params.append('minHeight', String(activeFilters.minHeight));
-        if (activeFilters.maxHeight) params.append('maxHeight', String(activeFilters.maxHeight));
-        params.append('page', '0');
-        params.append('size', '20');
+        if (filters.color) params.append('color', filters.color);
+        if (filters.type) params.append('type', filters.type);
+        if (filters.material) params.append('material', filters.material);
+        if (filters.minHeight) params.append('minHeight', String(filters.minHeight));
+        if (filters.maxHeight) params.append('maxHeight', String(filters.maxHeight));
+        params.append('page', String(pageToLoad));
+        params.append('size', '12');
 
-        fetch(`http://localhost:8080/api/photos?${params.toString()}`)
-            .then(response => {
-                if (!response.ok) throw new Error('Nie udało się pobrać zdjęć');
-                return response.json();
+        const url = `http://localhost:8080/api/photos?${params.toString()}`;
+
+        if (reset) setLoading(true);
+        else setLoadingMore(true);
+
+        fetch(url)
+            .then(res => {
+                if (!res.ok) throw new Error('Nie udało się pobrać zdjęć');
+                return res.json();
             })
-            .then(data => setPhotos(data.content))
+            .then(data => {
+                const newPhotos = data.content;
+                setPhotos(prev => reset ? newPhotos : [...prev, ...newPhotos]);
+                setHasMore(!data.last);
+                if (reset) {
+                    setPage(1);
+                } else {
+                    setPage(prev => prev + 1);
+                }
+            })
             .catch(err => setError(err.message))
-            .finally(() => setLoading(false));
-    };
+            .finally(() => {
+                setLoading(false);
+                setLoadingMore(false);
+            });
+    }, [filters]);
 
     useEffect(() => {
-        fetchPhotos(filters);
-    }, [filters, refreshKey]);
+        setPhotos([]);
+        setPage(0);
+        setHasMore(true);
+        lastFetchedPage.current = null;
+        setError(null);
+        setSelectedPhoto(null);
+        setPhotoToDelete(null);
+        setPhotoToEdit(null);
+        fetchPhotos(0, true);
+    }, [filters, fetchPhotos]);
+
+    useEffect(() => {
+        if (!hasMore || loadingMore || loading) return;
+        if (observer.current) observer.current.disconnect();
+
+        observer.current = new IntersectionObserver(entries => {
+            if (entries[0].isIntersecting) {
+                fetchPhotos(page);
+            }
+        });
+
+        if (loadMoreRef.current) {
+            observer.current.observe(loadMoreRef.current);
+        }
+    }, [fetchPhotos, hasMore, loadingMore, loading, page]);
 
     const handleDelete = (photoId: number) => {
         fetch(`http://localhost:8080/api/photos/${photoId}`, {
             method: 'DELETE',
-            headers: {
-                Authorization: `Bearer ${getToken()!}`
-            },
+            headers: { Authorization: `Bearer ${getToken()!}` },
             credentials: 'include'
         })
             .then(res => {
                 if (!res.ok) throw new Error('Błąd podczas usuwania zdjęcia');
                 setPhotoToDelete(null);
-                setRefreshKey(k => k + 1);
+                setPhotos(prev => prev.filter(p => p.id !== photoId));
             })
             .catch(err => alert(err.message));
     };
@@ -67,17 +113,19 @@ function Gallery({ filters }: GalleryProps) {
 
     return (
         <>
-            <section className="gallery">
+            <div className="gallery">
                 {photos.map(photo => (
-                    <div className="photo" key={photo.id}>
+                    <div className="photo" key={photo.id} onClick={() => setSelectedPhoto(photo)}>
                         <img
                             src={`http://localhost:8080${photo.imageUrl}`}
                             alt={`${photo.type} - ${photo.color}`}
-                            onClick={() => setSelectedPhoto(photo)}
                         />
                     </div>
                 ))}
-            </section>
+                <div ref={loadMoreRef} style={{ height: '1px' }}></div>
+            </div>
+
+            {loadingMore && <p style={{ textAlign: 'center' }}>Ładowanie kolejnych zdjęć...</p>}
 
             {selectedPhoto && (
                 <PhotoModal
@@ -105,7 +153,7 @@ function Gallery({ filters }: GalleryProps) {
                 <EditPhotoForm
                     photo={photoToEdit}
                     onClose={() => setPhotoToEdit(null)}
-                    onSave={() => setRefreshKey(k => k + 1)}
+                    onSave={() => fetchPhotos(0, true)}
                 />
             )}
         </>
