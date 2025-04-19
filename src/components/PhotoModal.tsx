@@ -6,9 +6,10 @@ interface Props {
     photo: Photo;
     onClose: () => void;
     onDelete?: () => void;
+    onEdit?: () => void;
 }
 
-function PhotoModal({ photo, onClose, onDelete }: Props) {
+function PhotoModal({ photo, onClose, onDelete, onEdit }: Props) {
     return (
         <div className="modal-backdrop" onClick={onClose}>
             <div className="modal-content" onClick={e => e.stopPropagation()}>
@@ -21,6 +22,9 @@ function PhotoModal({ photo, onClose, onDelete }: Props) {
                     <p><strong>Dodano:</strong> {new Date(photo.createdAt).toLocaleDateString('pl-PL')}</p>
                 </div>
                 <div className="modal-actions">
+                    {isLoggedIn() && onEdit && (
+                        <button onClick={onEdit}>Edytuj</button>
+                    )}
                     {isLoggedIn() && onDelete && (
                         <button className="danger" onClick={onDelete}>Usuń zdjęcie</button>
                     )}

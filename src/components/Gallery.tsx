@@ -3,6 +3,7 @@ import './Gallery.css';
 import { Photo } from '../types';
 import PhotoModal from './PhotoModal';
 import DeleteConfirmModal from './DeleteConfirmModal';
+import EditPhotoForm from './EditPhotoForm';
 import { Filters } from './Sidebar';
 import { getToken } from '../utils/auth';
 
@@ -16,6 +17,7 @@ function Gallery({ filters }: GalleryProps) {
     const [error, setError] = useState<string | null>(null);
     const [selectedPhoto, setSelectedPhoto] = useState<Photo | null>(null);
     const [photoToDelete, setPhotoToDelete] = useState<Photo | null>(null);
+    const [photoToEdit, setPhotoToEdit] = useState<Photo | null>(null);
     const [refreshKey, setRefreshKey] = useState(0);
 
     const fetchPhotos = (activeFilters: Filters) => {
@@ -85,6 +87,10 @@ function Gallery({ filters }: GalleryProps) {
                         setPhotoToDelete(selectedPhoto);
                         setSelectedPhoto(null);
                     }}
+                    onEdit={() => {
+                        setPhotoToEdit(selectedPhoto);
+                        setSelectedPhoto(null);
+                    }}
                 />
             )}
 
@@ -92,6 +98,14 @@ function Gallery({ filters }: GalleryProps) {
                 <DeleteConfirmModal
                     onCancel={() => setPhotoToDelete(null)}
                     onConfirm={() => handleDelete(photoToDelete.id)}
+                />
+            )}
+
+            {photoToEdit && (
+                <EditPhotoForm
+                    photo={photoToEdit}
+                    onClose={() => setPhotoToEdit(null)}
+                    onSave={() => setRefreshKey(k => k + 1)}
                 />
             )}
         </>
