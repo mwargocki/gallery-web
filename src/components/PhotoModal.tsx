@@ -1,12 +1,14 @@
 import './PhotoModal.css';
 import { Photo } from '../types';
+import { isLoggedIn } from '../utils/auth';
 
 interface Props {
     photo: Photo;
     onClose: () => void;
+    onDelete?: () => void;
 }
 
-function PhotoModal({ photo, onClose }: Props) {
+function PhotoModal({ photo, onClose, onDelete }: Props) {
     return (
         <div className="modal-backdrop" onClick={onClose}>
             <div className="modal-content" onClick={e => e.stopPropagation()}>
@@ -18,7 +20,12 @@ function PhotoModal({ photo, onClose }: Props) {
                     <p><strong>Wysokość:</strong> {photo.height} cm</p>
                     <p><strong>Dodano:</strong> {new Date(photo.createdAt).toLocaleDateString('pl-PL')}</p>
                 </div>
-                <button className="close-button" onClick={onClose}>Zamknij</button>
+                <div className="modal-actions">
+                    {isLoggedIn() && onDelete && (
+                        <button className="danger" onClick={onDelete}>Usuń zdjęcie</button>
+                    )}
+                    <button onClick={onClose}>Zamknij</button>
+                </div>
             </div>
         </div>
     );

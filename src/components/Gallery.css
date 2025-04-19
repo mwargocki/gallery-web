@@ -8,7 +8,6 @@
     background-color: #f4f6f8;
 }
 
-/* Tablet */
 @media (max-width: 768px) {
     .gallery {
         grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
@@ -16,7 +15,6 @@
     }
 }
 
-/* Telefon */
 @media (max-width: 480px) {
     .gallery {
         grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
@@ -26,6 +24,7 @@
 }
 
 .photo {
+    position: relative;
     border-radius: 8px;
     overflow: hidden;
     background-color: white;
@@ -34,7 +33,7 @@
 }
 
 .photo:hover {
-    transform: scale(1.05);
+    transform: scale(1.03);
 }
 
 .photo img {

@@ -46,3 +46,26 @@
 .close-button:hover {
     background-color: #0056b3;
 }
+
+.modal-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 1rem;
+    gap: 1rem;
+}
+
+.modal-actions button {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.modal-actions .danger {
+    background-color: #dc3545;
+    color: white;
+}
+
+.modal-actions .danger:hover {
+    background-color: #a71d2a;
+}
