@@ -1,0 +1,41 @@
+.sidebar {
+    width: 250px;
+    padding: 1.5rem;
+    background-color: #ffffff;
+    border-right: 1px solid #e5e5e5;
+    overflow-y: auto;
+}
+
+.sidebar h2 {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+}
+
+.filter-group {
+    margin-bottom: 1rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.filter-group label {
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin-bottom: 0.3rem;
+}
+
+.filter-group select,
+.filter-group input {
+    padding: 0.4rem;
+    font-size: 0.9rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+/* Na telefonach: pełna szerokość */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid #e5e5e5;
+    }
+}

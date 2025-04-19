@@ -1,0 +1,21 @@
+.app {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f8f9fa;
+    color: #333;
+}
+
+.main {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+}
+
+/* Na małych ekranach: pionowo */
+@media (max-width: 768px) {
+    .main {
+        flex-direction: column;
+    }
+}
