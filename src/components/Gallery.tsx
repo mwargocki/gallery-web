@@ -116,9 +116,9 @@ function Gallery({ filters }: GalleryProps) {
     };
 
     const breakpointColumnsObj = {
-        default: 3,
-        1024: 2,
-        600: 1
+        default: 4,
+        1024: 3,
+        600: 2
     };
 
     if (loading && photos.length === 0) return <p>Ładowanie...</p>;
