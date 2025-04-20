@@ -1,4 +1,3 @@
-// ...importy
 import { useCallback, useEffect, useRef, useState } from 'react';
 import Masonry from 'react-masonry-css';
 import './Gallery.css';
@@ -30,6 +29,7 @@ function Gallery({ filters }: GalleryProps) {
     const navigate = useNavigate();
     const location = useLocation();
     const { photoId } = useParams();
+
     const previousLocationRef = useRef<string | null>(null);
 
     const fetchPhotos = useCallback((pageToLoad: number, reset = false) => {
@@ -167,12 +167,11 @@ function Gallery({ filters }: GalleryProps) {
                     }}
                     onDelete={() => {
                         setPhotoToDelete(selectedPhoto);
-                        setSelectedPhoto(null);
                     }}
                     onEdit={() => {
                         setPhotoToEdit(selectedPhoto);
                     }}
-                    isEditing={!!photoToEdit}
+                    isEditing={!!photoToEdit || !!photoToDelete}
                 />
             )}
 

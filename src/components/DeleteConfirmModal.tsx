@@ -9,11 +9,14 @@ interface Props {
 function DeleteConfirmModal({ onConfirm, onCancel }: Props) {
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
-            if (e.key === 'Escape') onCancel();
+            if (e.key === 'Escape') {
+                e.preventDefault();
+                onCancel();
+            }
         };
-        document.addEventListener('keydown', handleKeyDown);
-        return () => document.removeEventListener('keydown', handleKeyDown);
-    }, []);
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [onCancel]);
 
     return (
         <div className="delete-modal-backdrop" onClick={onCancel}>
