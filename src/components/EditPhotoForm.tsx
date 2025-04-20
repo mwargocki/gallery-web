@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
+import './EditPhotoForm.css';
 import { Photo } from '../types';
 import { getToken } from '../utils/auth';
-import './EditPhotoForm.css';
 
 interface Props {
     photo: Photo;
@@ -15,6 +15,24 @@ function EditPhotoForm({ photo, onClose, onSave }: Props) {
     const [type, setType] = useState(photo.type);
     const [height, setHeight] = useState(photo.height);
     const [error, setError] = useState<string | null>(null);
+
+    const [colorOptions, setColorOptions] = useState<string[]>([]);
+    const [typeOptions, setTypeOptions] = useState<string[]>([]);
+    const [materialOptions, setMaterialOptions] = useState<string[]>([]);
+
+    useEffect(() => {
+        fetch('http://localhost:8080/api/filters/colors')
+            .then(res => res.json())
+            .then(setColorOptions);
+
+        fetch('http://localhost:8080/api/filters/types')
+            .then(res => res.json())
+            .then(setTypeOptions);
+
+        fetch('http://localhost:8080/api/filters/materials')
+            .then(res => res.json())
+            .then(setMaterialOptions);
+    }, []);
 
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
@@ -52,10 +70,50 @@ function EditPhotoForm({ photo, onClose, onSave }: Props) {
             <form className="edit-modal edit-photo-form-inner" onClick={e => e.stopPropagation()} onSubmit={handleSubmit}>
                 <h2>Edytuj atrybuty</h2>
                 {error && <p className="error">{error}</p>}
-                <input type="text" placeholder="Kolor" value={color} onChange={e => setColor(e.target.value)} />
-                <input type="text" placeholder="Materiał" value={material} onChange={e => setMaterial(e.target.value)} />
-                <input type="text" placeholder="Typ" value={type} onChange={e => setType(e.target.value)} />
-                <input type="number" placeholder="Wysokość (cm)" value={height} onChange={e => setHeight(parseInt(e.target.value))} />
+
+                <input
+                    list="colors"
+                    placeholder="Kolor"
+                    value={color}
+                    onChange={e => setColor(e.target.value)}
+                />
+                <datalist id="colors">
+                    {colorOptions.map(option => (
+                        <option key={option} value={option} />
+                    ))}
+                </datalist>
+
+                <input
+                    list="materials"
+                    placeholder="Materiał"
+                    value={material}
+                    onChange={e => setMaterial(e.target.value)}
+                />
+                <datalist id="materials">
+                    {materialOptions.map(option => (
+                        <option key={option} value={option} />
+                    ))}
+                </datalist>
+
+                <input
+                    list="types"
+                    placeholder="Typ"
+                    value={type}
+                    onChange={e => setType(e.target.value)}
+                />
+                <datalist id="types">
+                    {typeOptions.map(option => (
+                        <option key={option} value={option} />
+                    ))}
+                </datalist>
+
+                <input
+                    type="number"
+                    placeholder="Wysokość (cm)"
+                    value={height}
+                    onChange={e => setHeight(parseInt(e.target.value))}
+                />
+
                 <div className="edit-photo-form-buttons">
                     <button type="submit">Zapisz</button>
                     <button type="button" onClick={onClose}>Anuluj</button>

@@ -86,3 +86,17 @@
     width: 100%;
     box-sizing: border-box;
 }
+
+.edit-photo-form-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1rem;
+    flex-wrap: wrap;
+}
+
+.edit-photo-form-buttons button {
+    flex: 1;
+    min-width: 100px;
+    max-width: 150px;
+}

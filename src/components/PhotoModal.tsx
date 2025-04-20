@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import './PhotoModal.css';
 import { Photo } from '../types';
 import { isLoggedIn } from '../utils/auth';
@@ -10,6 +11,16 @@ interface Props {
 }
 
 function PhotoModal({ photo, onClose, onDelete, onEdit }: Props) {
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.key === 'Escape') {
+                onClose();
+            }
+        };
+        document.addEventListener('keydown', handleKeyDown);
+        return () => document.removeEventListener('keydown', handleKeyDown);
+    }, []);
+
     return (
         <div className="photo-modal-backdrop" onClick={onClose}>
             <div className="photo-modal" onClick={e => e.stopPropagation()}>
