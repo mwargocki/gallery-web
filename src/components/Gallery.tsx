@@ -1,5 +1,6 @@
-// Gallery.tsx (poprawka: blokowanie wielokrotnych zapytań przy tym samym page)
-import { useEffect, useState, useRef, useCallback } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import Masonry from 'react-masonry-css';
+import InfiniteScroll from 'react-infinite-scroll-component';
 import './Gallery.css';
 import { Photo } from '../types';
 import PhotoModal from './PhotoModal';
@@ -14,22 +15,19 @@ interface GalleryProps {
 
 function Gallery({ filters }: GalleryProps) {
     const [photos, setPhotos] = useState<Photo[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [loadingMore, setLoadingMore] = useState(false);
-    const [error, setError] = useState<string | null>(null);
+    const [hasMore, setHasMore] = useState(true);
     const [selectedPhoto, setSelectedPhoto] = useState<Photo | null>(null);
     const [photoToDelete, setPhotoToDelete] = useState<Photo | null>(null);
     const [photoToEdit, setPhotoToEdit] = useState<Photo | null>(null);
-    const [page, setPage] = useState(0);
-    const [hasMore, setHasMore] = useState(true);
-    const lastFetchedPage = useRef<number | null>(null);
+    const [error, setError] = useState<string | null>(null);
 
-    const observer = useRef<IntersectionObserver | null>(null);
-    const loadMoreRef = useRef<HTMLDivElement>(null);
+    // Ref trzymający aktualną stronę
+    const pageRef = useRef(0);
 
-    const fetchPhotos = useCallback((pageToLoad: number, reset = false) => {
-        if (!reset && lastFetchedPage.current === pageToLoad) return;
-        lastFetchedPage.current = pageToLoad;
+    const loadPhotos = (pageToLoad: number, reset = false) => {
+        console.log('🟡 WYWOŁANIE loadPhotos');
+        console.log('➡️ pageToLoad:', pageToLoad);
+        console.log('📦 reset:', reset);
 
         const params = new URLSearchParams();
         if (filters.color) params.append('color', filters.color);
@@ -42,57 +40,39 @@ function Gallery({ filters }: GalleryProps) {
 
         const url = `http://localhost:8080/api/photos?${params.toString()}`;
 
-        if (reset) setLoading(true);
-        else setLoadingMore(true);
-
         fetch(url)
             .then(res => {
                 if (!res.ok) throw new Error('Nie udało się pobrać zdjęć');
                 return res.json();
             })
             .then(data => {
-                const newPhotos = data.content;
-                setPhotos(prev => reset ? newPhotos : [...prev, ...newPhotos]);
-                setHasMore(!data.last);
+                console.log('✅ Odpowiedź z backendu:', data);
                 if (reset) {
-                    setPage(1);
+                    setPhotos(data.content);
                 } else {
-                    setPage(prev => prev + 1);
+                    setPhotos(prev => [...prev, ...data.content]);
                 }
+
+                setHasMore(!data.last);
+                const newPage = pageToLoad + 1;
+                console.log('🔁 INKREMENTUJĘ page do:', newPage);
+                pageRef.current = newPage;
             })
-            .catch(err => setError(err.message))
-            .finally(() => {
-                setLoading(false);
-                setLoadingMore(false);
-            });
-    }, [filters]);
+            .catch(err => setError(err.message));
+    };
+
+    const loadPhotosRef = useRef(() => {});
+    loadPhotosRef.current = () => {
+        console.log('🟢 next() wywołane przy scrollu (gallery-scroll)');
+        loadPhotos(pageRef.current);
+    };
 
     useEffect(() => {
-        setPhotos([]);
-        setPage(0);
+        console.log('🔄 resetuję galerię');
+        pageRef.current = 0;
         setHasMore(true);
-        lastFetchedPage.current = null;
-        setError(null);
-        setSelectedPhoto(null);
-        setPhotoToDelete(null);
-        setPhotoToEdit(null);
-        fetchPhotos(0, true);
-    }, [filters, fetchPhotos]);
-
-    useEffect(() => {
-        if (!hasMore || loadingMore || loading) return;
-        if (observer.current) observer.current.disconnect();
-
-        observer.current = new IntersectionObserver(entries => {
-            if (entries[0].isIntersecting) {
-                fetchPhotos(page);
-            }
-        });
-
-        if (loadMoreRef.current) {
-            observer.current.observe(loadMoreRef.current);
-        }
-    }, [fetchPhotos, hasMore, loadingMore, loading, page]);
+        loadPhotos(0, true);
+    }, [filters]);
 
     const handleDelete = (photoId: number) => {
         fetch(`http://localhost:8080/api/photos/${photoId}`, {
@@ -108,24 +88,41 @@ function Gallery({ filters }: GalleryProps) {
             .catch(err => alert(err.message));
     };
 
-    if (loading) return <p>Ładowanie...</p>;
+    const breakpointColumnsObj = {
+        default: 3,
+        1024: 2,
+        600: 1
+    };
+
     if (error) return <p>Błąd: {error}</p>;
 
     return (
         <>
-            <div className="gallery">
-                {photos.map(photo => (
-                    <div className="photo" key={photo.id} onClick={() => setSelectedPhoto(photo)}>
-                        <img
-                            src={`http://localhost:8080${photo.imageUrl}`}
-                            alt={`${photo.type} - ${photo.color}`}
-                        />
-                    </div>
-                ))}
-                <div ref={loadMoreRef} style={{ height: '1px' }}></div>
-            </div>
-
-            {loadingMore && <p style={{ textAlign: 'center' }}>Ładowanie kolejnych zdjęć...</p>}
+            <InfiniteScroll
+                dataLength={photos.length}
+                next={loadPhotosRef.current}
+                hasMore={hasMore}
+                loader={<p style={{ textAlign: 'center' }}>Ładowanie...</p>}
+                endMessage={<p style={{ textAlign: 'center' }}>Koniec wyników</p>}
+                scrollableTarget="gallery-scroll"
+                scrollThreshold={0.9}
+            >
+                <Masonry
+                    breakpointCols={breakpointColumnsObj}
+                    className="gallery"
+                    columnClassName="gallery-column"
+                >
+                    {photos.map(photo => (
+                        <div className="photo" key={photo.id} onClick={() => setSelectedPhoto(photo)}>
+                            <img
+                                src={`http://localhost:8080${photo.imageUrl}`}
+                                alt={`${photo.type} - ${photo.color}`}
+                                loading="lazy"
+                            />
+                        </div>
+                    ))}
+                </Masonry>
+            </InfiniteScroll>
 
             {selectedPhoto && (
                 <PhotoModal
@@ -153,7 +150,7 @@ function Gallery({ filters }: GalleryProps) {
                 <EditPhotoForm
                     photo={photoToEdit}
                     onClose={() => setPhotoToEdit(null)}
-                    onSave={() => fetchPhotos(0, true)}
+                    onSave={() => loadPhotos(0, true)}
                 />
             )}
         </>

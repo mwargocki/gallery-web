@@ -10,14 +10,40 @@
 .main {
     display: flex;
     flex: 1;
-    height: 100%;
-    overflow-y: auto;
-    overflow-x: hidden;
+    overflow: hidden;
 }
 
-/* Responsywność: na telefonie filtry u góry */
+.sidebar {
+    width: 250px;
+    min-width: 250px;
+    background-color: #fff;
+    border-right: 1px solid #e5e5e5;
+    padding: 1.5rem;
+    box-sizing: border-box;
+}
+
+.gallery-scroll {
+    flex: 1;
+    overflow-y: auto;
+    height: calc(100vh - 72px); /* zakładamy, że Header ma ok. 72px wysokości */
+    position: relative;
+    padding: 1rem;
+    box-sizing: border-box;
+}
+
+/* Responsywność */
 @media (max-width: 768px) {
     .main {
         flex-direction: column;
+    }
+
+    .sidebar {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid #e5e5e5;
+    }
+
+    .gallery-scroll {
+        height: calc(100vh - 200px); /* estymacja: header + sidebar */
     }
 }

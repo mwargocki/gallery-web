@@ -29,7 +29,9 @@ function App() {
 
             <main className="main">
                 <Sidebar onChange={setFilters} />
-                <Gallery filters={filters} />
+                <div id="gallery-scroll" className="gallery-scroll">
+                    <Gallery filters={filters} />
+                </div>
             </main>
 
             {showLogin && !authenticated && (
