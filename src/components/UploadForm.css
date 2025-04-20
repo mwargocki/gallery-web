@@ -42,7 +42,7 @@
 .upload-modal button {
     padding: 0.6rem;
     font-weight: 500;
-    background-color: #28a745;
+    background-color: #007bff;
     color: white;
     border: none;
     border-radius: 6px;
@@ -50,7 +50,7 @@
 }
 
 .upload-modal button:hover {
-    background-color: #218838;
+    background-color: #0056b3;
 }
 
 .error {
@@ -73,4 +73,16 @@
         transform: scale(1);
         opacity: 1;
     }
+}
+
+.upload-form-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+.upload-form-inner input {
+    width: 100%;
+    box-sizing: border-box;
 }

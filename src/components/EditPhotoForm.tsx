@@ -41,7 +41,7 @@ function EditPhotoForm({ photo, onClose, onSave }: Props) {
 
     return (
         <div className="edit-modal-backdrop" onClick={onClose}>
-            <form className="edit-modal" onClick={e => e.stopPropagation()} onSubmit={handleSubmit}>
+            <form className="edit-modal edit-photo-form-inner" onClick={e => e.stopPropagation()} onSubmit={handleSubmit}>
                 <h2>Edytuj atrybuty</h2>
                 {error && <p className="error">{error}</p>}
                 <input type="text" placeholder="Kolor" value={color} onChange={e => setColor(e.target.value)} />

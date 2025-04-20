@@ -54,7 +54,7 @@ function UploadForm({ onUploadSuccess, onClose }: Props) {
 
     return (
         <div className="upload-modal-backdrop" onClick={onClose}>
-            <form className="upload-modal" onClick={(e) => e.stopPropagation()} onSubmit={handleSubmit}>
+            <form className="upload-modal upload-form-inner" onClick={(e) => e.stopPropagation()} onSubmit={handleSubmit}>
                 <h2>Dodaj nowe zdjęcie</h2>
                 {error && <p className="error">{error}</p>}
                 <input type="file" accept="image/*" onChange={e => setFile(e.target.files?.[0] || null)} />
