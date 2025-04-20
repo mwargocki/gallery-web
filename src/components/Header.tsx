@@ -18,7 +18,7 @@ function Header({ authenticated, onLogout, onShowLogin, onShowUpload, onShowAddU
                     <>
                         <button className="login-button" onClick={onShowUpload}>
                             <Plus size={16} style={{ marginRight: 6 }} />
-                            Dodaj
+                            Dodaj zdjęcie
                         </button>
                         <button className="login-button" onClick={onShowAddUser}>
                             <UserPlus size={16} style={{ marginRight: 6 }} />
