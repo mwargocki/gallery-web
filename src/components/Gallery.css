@@ -13,13 +13,14 @@
     margin-bottom: 1rem;
     background-color: white;
     border-radius: 8px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.50);
     overflow: hidden;
-    transition: transform 0.2s;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .photo:hover {
-    transform: scale(1.03);
+    transform: scale(1.05);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.75);
     cursor: pointer;
 }
 
