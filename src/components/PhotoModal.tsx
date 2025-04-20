@@ -11,8 +11,8 @@ interface Props {
 
 function PhotoModal({ photo, onClose, onDelete, onEdit }: Props) {
     return (
-        <div className="modal-backdrop" onClick={onClose}>
-            <div className="modal-content" onClick={e => e.stopPropagation()}>
+        <div className="photo-modal-backdrop" onClick={onClose}>
+            <div className="photo-modal" onClick={e => e.stopPropagation()}>
                 <img src={`http://localhost:8080${photo.imageUrl}`} alt={photo.type} />
                 <div className="photo-details">
                     <p><strong>Typ:</strong> {photo.type}</p>

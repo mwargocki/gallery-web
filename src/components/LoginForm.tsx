@@ -33,22 +33,12 @@ function LoginForm({ onLoginSuccess, onClose }: Props) {
 
     return (
         <div className="login-modal-backdrop" onClick={onClose}>
-            <div className="login-form" onClick={(e) => e.stopPropagation()}>
+            <div className="login-modal" onClick={(e) => e.stopPropagation()}>
                 <h2>Zaloguj się</h2>
                 {error && <p className="error">{error}</p>}
                 <form onSubmit={handleSubmit}>
-                    <input
-                        type="text"
-                        placeholder="Login"
-                        value={username}
-                        onChange={e => setUsername(e.target.value)}
-                    />
-                    <input
-                        type="password"
-                        placeholder="Hasło"
-                        value={password}
-                        onChange={e => setPassword(e.target.value)}
-                    />
+                    <input type="text" placeholder="Login" value={username} onChange={e => setUsername(e.target.value)} />
+                    <input type="password" placeholder="Hasło" value={password} onChange={e => setPassword(e.target.value)} />
                     <button type="submit">Zaloguj</button>
                 </form>
             </div>

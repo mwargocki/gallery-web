@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Photo } from '../types';
-import './EditPhotoForm.css';
 import { getToken } from '../utils/auth';
+import './EditPhotoForm.css';
 
 interface Props {
     photo: Photo;
@@ -41,14 +41,13 @@ function EditPhotoForm({ photo, onClose, onSave }: Props) {
 
     return (
         <div className="edit-modal-backdrop" onClick={onClose}>
-            <form className="edit-photo-form" onClick={e => e.stopPropagation()} onSubmit={handleSubmit}>
+            <form className="edit-modal" onClick={e => e.stopPropagation()} onSubmit={handleSubmit}>
                 <h2>Edytuj atrybuty</h2>
                 {error && <p className="error">{error}</p>}
                 <input type="text" placeholder="Kolor" value={color} onChange={e => setColor(e.target.value)} />
                 <input type="text" placeholder="Materiał" value={material} onChange={e => setMaterial(e.target.value)} />
                 <input type="text" placeholder="Typ" value={type} onChange={e => setType(e.target.value)} />
                 <input type="number" placeholder="Wysokość (cm)" value={height} onChange={e => setHeight(parseInt(e.target.value))} />
-
                 <div style={{ display: 'flex', justifyContent: 'space-between', gap: '1rem' }}>
                     <button type="submit">Zapisz</button>
                     <button type="button" onClick={onClose}>Anuluj</button>
