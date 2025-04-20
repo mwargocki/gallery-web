@@ -2,9 +2,9 @@
     display: flex;
     flex-direction: column;
     height: 100vh;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: #f8f9fa;
-    color: #333;
+    color: #222;
+    font-family: 'Inter', sans-serif;
 }
 
 .main {
@@ -16,22 +16,23 @@
 .sidebar {
     width: 250px;
     min-width: 250px;
-    background-color: #fff;
+    background-color: #ffffff;
     border-right: 1px solid #e5e5e5;
     padding: 1.5rem;
     box-sizing: border-box;
+    color: #222;
 }
 
 .gallery-scroll {
     flex: 1;
     overflow-y: auto;
-    height: calc(100vh - 72px); /* zakładamy, że Header ma ok. 72px wysokości */
-    position: relative;
+    height: calc(100vh - 72px); /* wysokość headera */
     padding: 1rem;
     box-sizing: border-box;
+    background-color: #ffffff;
+    color: #222;
 }
 
-/* Responsywność */
 @media (max-width: 768px) {
     .main {
         flex-direction: column;
@@ -44,6 +45,6 @@
     }
 
     .gallery-scroll {
-        height: calc(100vh - 200px); /* estymacja: header + sidebar */
+        height: calc(100vh - 200px); /* header + sidebar */
     }
 }
