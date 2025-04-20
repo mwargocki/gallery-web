@@ -6,14 +6,15 @@ import { useState } from 'react';
 import { isLoggedIn, clearToken } from './utils/auth';
 import LoginForm from './components/LoginForm';
 import UploadForm from './components/UploadForm';
+import AddUserForm from './components/AddUserForm';
 import BackToTopButton from './components/BackToTopButton';
-import EditPhotoForm from './components/EditPhotoForm';
 
 function App() {
     const [filters, setFilters] = useState<Filters>({});
     const [authenticated, setAuthenticated] = useState<boolean>(isLoggedIn());
     const [showLogin, setShowLogin] = useState<boolean>(false);
     const [showUpload, setShowUpload] = useState<boolean>(false);
+    const [showAddUser, setShowAddUser] = useState<boolean>(false);
 
     const handleLogout = () => {
         clearToken();
@@ -27,6 +28,7 @@ function App() {
                 onLogout={handleLogout}
                 onShowLogin={() => setShowLogin(true)}
                 onShowUpload={() => setShowUpload(true)}
+                onShowAddUser={() => setShowAddUser(true)}
             />
 
             <main className="main">
@@ -50,6 +52,12 @@ function App() {
                 <UploadForm
                     onUploadSuccess={() => window.location.reload()}
                     onClose={() => setShowUpload(false)}
+                />
+            )}
+
+            {authenticated && showAddUser && (
+                <AddUserForm
+                    onClose={() => setShowAddUser(false)}
                 />
             )}
 
