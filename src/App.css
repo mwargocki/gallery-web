@@ -3,7 +3,7 @@ body, html, #root {
     padding: 0;
     height: 100%;
     font-family: 'Inter', sans-serif;
-    background: #f5f5f5;
+    background-color: #f3f4f6;
     color: #333;
     overflow: hidden;
 }
@@ -27,17 +27,18 @@ body, html, #root {
     height: 100%;
     padding: 1rem;
     box-sizing: border-box;
-    background: transparent;
+    background-color: transparent;
 }
 
+/* Header styl dopasowany do sidebaru */
 .header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     background-color: #ffffff;
     padding: 1rem 2rem;
-    border-bottom: 1px solid #dddddd;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    border-bottom: 1px solid #e0e0e0;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
     z-index: 100;
 }
 
@@ -45,9 +46,11 @@ body, html, #root {
     font-size: 1.5rem;
     font-weight: 600;
     margin: 0;
-    color: #222;
+    color: #333;
+    letter-spacing: 0.5px;
 }
 
+/* Przycisk */
 .login-button {
     background-color: #5c7cfa;
     color: white;
@@ -63,6 +66,7 @@ body, html, #root {
     background-color: #3b5bdb;
 }
 
+/* Przycisk "Wróć na górę" */
 .back-to-top {
     position: fixed;
     bottom: 1.5rem;
@@ -84,6 +88,7 @@ body, html, #root {
     background-color: #3b5bdb;
 }
 
+/* Mobilna wersja */
 @media (max-width: 768px) {
     .main {
         flex-direction: column;
