@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Photo } from '../types';
 import { getToken } from '../utils/auth';
 import './EditPhotoForm.css';
@@ -15,6 +15,14 @@ function EditPhotoForm({ photo, onClose, onSave }: Props) {
     const [type, setType] = useState(photo.type);
     const [height, setHeight] = useState(photo.height);
     const [error, setError] = useState<string | null>(null);
+
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.key === 'Escape') onClose();
+        };
+        document.addEventListener('keydown', handleKeyDown);
+        return () => document.removeEventListener('keydown', handleKeyDown);
+    }, []);
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -48,7 +56,7 @@ function EditPhotoForm({ photo, onClose, onSave }: Props) {
                 <input type="text" placeholder="Materiał" value={material} onChange={e => setMaterial(e.target.value)} />
                 <input type="text" placeholder="Typ" value={type} onChange={e => setType(e.target.value)} />
                 <input type="number" placeholder="Wysokość (cm)" value={height} onChange={e => setHeight(parseInt(e.target.value))} />
-                <div style={{ display: 'flex', justifyContent: 'space-between', gap: '1rem' }}>
+                <div className="edit-photo-form-buttons">
                     <button type="submit">Zapisz</button>
                     <button type="button" onClick={onClose}>Anuluj</button>
                 </div>

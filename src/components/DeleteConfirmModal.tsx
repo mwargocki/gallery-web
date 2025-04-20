@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import './DeleteConfirmModal.css';
 
 interface Props {
@@ -6,6 +7,14 @@ interface Props {
 }
 
 function DeleteConfirmModal({ onConfirm, onCancel }: Props) {
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.key === 'Escape') onCancel();
+        };
+        document.addEventListener('keydown', handleKeyDown);
+        return () => document.removeEventListener('keydown', handleKeyDown);
+    }, []);
+
     return (
         <div className="delete-modal-backdrop" onClick={onCancel}>
             <div className="delete-modal" onClick={e => e.stopPropagation()}>
