@@ -20,15 +20,9 @@ function Gallery({ filters }: GalleryProps) {
     const [photoToDelete, setPhotoToDelete] = useState<Photo | null>(null);
     const [photoToEdit, setPhotoToEdit] = useState<Photo | null>(null);
     const [error, setError] = useState<string | null>(null);
-
-    // Ref trzymający aktualną stronę
     const pageRef = useRef(0);
 
     const loadPhotos = (pageToLoad: number, reset = false) => {
-        console.log('🟡 WYWOŁANIE loadPhotos');
-        console.log('➡️ pageToLoad:', pageToLoad);
-        console.log('📦 reset:', reset);
-
         const params = new URLSearchParams();
         if (filters.color) params.append('color', filters.color);
         if (filters.type) params.append('type', filters.type);
@@ -38,15 +32,12 @@ function Gallery({ filters }: GalleryProps) {
         params.append('page', String(pageToLoad));
         params.append('size', '12');
 
-        const url = `http://localhost:8080/api/photos?${params.toString()}`;
-
-        fetch(url)
+        fetch(`http://localhost:8080/api/photos?${params.toString()}`)
             .then(res => {
                 if (!res.ok) throw new Error('Nie udało się pobrać zdjęć');
                 return res.json();
             })
             .then(data => {
-                console.log('✅ Odpowiedź z backendu:', data);
                 if (reset) {
                     setPhotos(data.content);
                 } else {
@@ -54,21 +45,17 @@ function Gallery({ filters }: GalleryProps) {
                 }
 
                 setHasMore(!data.last);
-                const newPage = pageToLoad + 1;
-                console.log('🔁 INKREMENTUJĘ page do:', newPage);
-                pageRef.current = newPage;
+                pageRef.current = pageToLoad + 1;
             })
             .catch(err => setError(err.message));
     };
 
     const loadPhotosRef = useRef(() => {});
     loadPhotosRef.current = () => {
-        console.log('🟢 next() wywołane przy scrollu (gallery-scroll)');
         loadPhotos(pageRef.current);
     };
 
     useEffect(() => {
-        console.log('🔄 resetuję galerię');
         pageRef.current = 0;
         setHasMore(true);
         loadPhotos(0, true);
