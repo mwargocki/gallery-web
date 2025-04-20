@@ -36,9 +36,19 @@ function LoginForm({ onLoginSuccess, onClose }: Props) {
             <div className="login-modal" onClick={(e) => e.stopPropagation()}>
                 <h2>Zaloguj się</h2>
                 {error && <p className="error">{error}</p>}
-                <form onSubmit={handleSubmit}>
-                    <input type="text" placeholder="Login" value={username} onChange={e => setUsername(e.target.value)} />
-                    <input type="password" placeholder="Hasło" value={password} onChange={e => setPassword(e.target.value)} />
+                <form onSubmit={handleSubmit} className="login-form-inner">
+                    <input
+                        type="text"
+                        placeholder="Login"
+                        value={username}
+                        onChange={e => setUsername(e.target.value)}
+                    />
+                    <input
+                        type="password"
+                        placeholder="Hasło"
+                        value={password}
+                        onChange={e => setPassword(e.target.value)}
+                    />
                     <button type="submit">Zaloguj</button>
                 </form>
             </div>
