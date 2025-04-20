@@ -26,6 +26,7 @@ function PhotoModal({ photo, onClose, onDelete, onEdit }: Props) {
             <div className="photo-modal" onClick={e => e.stopPropagation()}>
                 <img src={`http://localhost:8080${photo.imageUrl}`} alt={photo.type} />
                 <div className="photo-details">
+                    <p><strong>ID:</strong> {photo.id}</p>
                     <p><strong>Typ:</strong> {photo.type}</p>
                     <p><strong>Kolor:</strong> {photo.color}</p>
                     <p><strong>Materiał:</strong> {photo.material}</p>
