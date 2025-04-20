@@ -10,11 +10,22 @@ import AddUserForm from './components/AddUserForm';
 import BackToTopButton from './components/BackToTopButton';
 
 function App() {
-    const [filters, setFilters] = useState<Filters>({});
     const [authenticated, setAuthenticated] = useState<boolean>(isLoggedIn());
     const [showLogin, setShowLogin] = useState<boolean>(false);
     const [showUpload, setShowUpload] = useState<boolean>(false);
     const [showAddUser, setShowAddUser] = useState<boolean>(false);
+
+    // Odczytaj filtry z URL przy starcie
+    const [filters, setFilters] = useState<Filters>(() => {
+        const params = new URLSearchParams(window.location.search);
+        return {
+            color: params.get('color') || undefined,
+            type: params.get('type') || undefined,
+            material: params.get('material') || undefined,
+            minHeight: params.get('minHeight') ? parseInt(params.get('minHeight')!) : undefined,
+            maxHeight: params.get('maxHeight') ? parseInt(params.get('maxHeight')!) : undefined,
+        };
+    });
 
     const handleLogout = () => {
         clearToken();
@@ -32,7 +43,7 @@ function App() {
             />
 
             <main className="main">
-                <Sidebar onChange={setFilters} />
+                <Sidebar filters={filters} onChange={setFilters} />
                 <div id="gallery-scroll" className="gallery-scroll">
                     <Gallery filters={filters} />
                 </div>
@@ -56,9 +67,7 @@ function App() {
             )}
 
             {authenticated && showAddUser && (
-                <AddUserForm
-                    onClose={() => setShowAddUser(false)}
-                />
+                <AddUserForm onClose={() => setShowAddUser(false)} />
             )}
 
             <BackToTopButton />

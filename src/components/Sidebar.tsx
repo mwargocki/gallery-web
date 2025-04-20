@@ -6,10 +6,7 @@ import {
     Layers,
     Ruler
 } from 'lucide-react';
-
-interface FilterProps {
-    onChange: (filters: Filters) => void;
-}
+import { useNavigate } from 'react-router-dom';
 
 export interface Filters {
     color?: string;
@@ -19,11 +16,17 @@ export interface Filters {
     maxHeight?: number;
 }
 
-function Sidebar({ onChange }: FilterProps) {
+interface FilterProps {
+    filters: Filters;
+    onChange: (filters: Filters) => void;
+}
+
+function Sidebar({ filters, onChange }: FilterProps) {
     const [colors, setColors] = useState<string[]>([]);
     const [types, setTypes] = useState<string[]>([]);
     const [materials, setMaterials] = useState<string[]>([]);
-    const [filters, setFilters] = useState<Filters>({});
+
+    const navigate = useNavigate();
 
     useEffect(() => {
         fetch('http://localhost:8080/api/filters/colors').then(res => res.json()).then(setColors);
@@ -32,35 +35,41 @@ function Sidebar({ onChange }: FilterProps) {
     }, []);
 
     const handleChange = (key: keyof Filters, value: string) => {
-        const updated = { ...filters, [key]: value || undefined };
-        setFilters(updated);
+        const updated: Filters = { ...filters, [key]: value || undefined };
         onChange(updated);
+
+        const params = new URLSearchParams();
+        if (updated.color) params.set('color', updated.color);
+        if (updated.type) params.set('type', updated.type);
+        if (updated.material) params.set('material', updated.material);
+        if (updated.minHeight) params.set('minHeight', String(updated.minHeight));
+        if (updated.maxHeight) params.set('maxHeight', String(updated.maxHeight));
+
+        navigate({ search: params.toString() }, { replace: true });
     };
 
     return (
         <aside className="sidebar">
-            <p className="sidebar-section-title">Atrybuty</p>
-
             <div className="sidebar-item tight">
                 <Palette size={20} />
-                <select onChange={(e) => handleChange('color', e.target.value)}>
-                    <option value="">Kolor</option>
+                <select value={filters.color || ''} onChange={(e) => handleChange('color', e.target.value)}>
+                    <option value="">Wszystkie</option>
                     {colors.map(color => <option key={color}>{color}</option>)}
                 </select>
             </div>
 
             <div className="sidebar-item tight">
                 <Hammer size={20} />
-                <select onChange={(e) => handleChange('material', e.target.value)}>
-                    <option value="">Materiał</option>
+                <select value={filters.material || ''} onChange={(e) => handleChange('material', e.target.value)}>
+                    <option value="">Wszystkie</option>
                     {materials.map(m => <option key={m}>{m}</option>)}
                 </select>
             </div>
 
             <div className="sidebar-item tight">
                 <Layers size={20} />
-                <select onChange={(e) => handleChange('type', e.target.value)}>
-                    <option value="">Typ</option>
+                <select value={filters.type || ''} onChange={(e) => handleChange('type', e.target.value)}>
+                    <option value="">Wszystkie</option>
                     {types.map(type => <option key={type}>{type}</option>)}
                 </select>
             </div>
@@ -72,6 +81,7 @@ function Sidebar({ onChange }: FilterProps) {
                 <input
                     type="number"
                     placeholder="min (cm)"
+                    value={filters.minHeight ?? ''}
                     onChange={(e) => handleChange('minHeight', e.target.value)}
                 />
             </div>
@@ -81,6 +91,7 @@ function Sidebar({ onChange }: FilterProps) {
                 <input
                     type="number"
                     placeholder="max (cm)"
+                    value={filters.maxHeight ?? ''}
                     onChange={(e) => handleChange('maxHeight', e.target.value)}
                 />
             </div>
