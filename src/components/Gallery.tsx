@@ -1,6 +1,5 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import Masonry from 'react-masonry-css';
-import InfiniteScroll from 'react-infinite-scroll-component';
 import './Gallery.css';
 import { Photo } from '../types';
 import PhotoModal from './PhotoModal';
@@ -8,6 +7,7 @@ import DeleteConfirmModal from './DeleteConfirmModal';
 import EditPhotoForm from './EditPhotoForm';
 import { Filters } from './Sidebar';
 import { getToken } from '../utils/auth';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 
 interface GalleryProps {
     filters: Filters;
@@ -15,14 +15,27 @@ interface GalleryProps {
 
 function Gallery({ filters }: GalleryProps) {
     const [photos, setPhotos] = useState<Photo[]>([]);
-    const [hasMore, setHasMore] = useState(true);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
     const [selectedPhoto, setSelectedPhoto] = useState<Photo | null>(null);
     const [photoToDelete, setPhotoToDelete] = useState<Photo | null>(null);
     const [photoToEdit, setPhotoToEdit] = useState<Photo | null>(null);
-    const [error, setError] = useState<string | null>(null);
-    const pageRef = useRef(0);
+    const [hasMore, setHasMore] = useState(true);
+    const [page, setPage] = useState(0);
 
-    const loadPhotos = (pageToLoad: number, reset = false) => {
+    const isFetchingRef = useRef(false);
+    const sentinelRef = useRef<HTMLDivElement | null>(null);
+
+    const navigate = useNavigate();
+    const location = useLocation();
+    const { photoId } = useParams();
+
+    const previousLocationRef = useRef<string | null>(null);
+
+    const fetchPhotos = useCallback((pageToLoad: number, reset = false) => {
+        if (isFetchingRef.current) return;
+        isFetchingRef.current = true;
+
         const params = new URLSearchParams();
         if (filters.color) params.append('color', filters.color);
         if (filters.type) params.append('type', filters.type);
@@ -38,28 +51,54 @@ function Gallery({ filters }: GalleryProps) {
                 return res.json();
             })
             .then(data => {
-                if (reset) {
-                    setPhotos(data.content);
-                } else {
-                    setPhotos(prev => [...prev, ...data.content]);
-                }
-
+                setPhotos(prev => reset ? data.content : [...prev, ...data.content]);
                 setHasMore(!data.last);
-                pageRef.current = pageToLoad + 1;
+                setPage(pageToLoad + 1);
             })
-            .catch(err => setError(err.message));
-    };
-
-    const loadPhotosRef = useRef(() => {});
-    loadPhotosRef.current = () => {
-        loadPhotos(pageRef.current);
-    };
+            .catch(err => setError(err.message))
+            .finally(() => {
+                setLoading(false);
+                isFetchingRef.current = false;
+            });
+    }, [filters]);
 
     useEffect(() => {
-        pageRef.current = 0;
+        setPhotos([]);
+        setPage(0);
         setHasMore(true);
-        loadPhotos(0, true);
-    }, [filters]);
+        fetchPhotos(0, true);
+    }, [JSON.stringify(filters)]);
+
+    useEffect(() => {
+        if (!hasMore || loading) return;
+
+        const observer = new IntersectionObserver(entries => {
+            if (entries[0].isIntersecting) {
+                fetchPhotos(page);
+            }
+        });
+
+        if (sentinelRef.current) {
+            observer.observe(sentinelRef.current);
+        }
+
+        return () => observer.disconnect();
+    }, [page, hasMore, loading, fetchPhotos]);
+
+    useEffect(() => {
+        if (photoId) {
+            fetch(`http://localhost:8080/api/photos/${photoId}`)
+                .then(res => {
+                    if (!res.ok) throw new Error('Nie znaleziono zdjęcia');
+                    return res.json();
+                })
+                .then(data => setSelectedPhoto(data))
+                .catch(err => {
+                    alert(err.message);
+                    navigate('/photos');
+                });
+        }
+    }, [photoId, navigate]);
 
     const handleDelete = (photoId: number) => {
         fetch(`http://localhost:8080/api/photos/${photoId}`, {
@@ -71,6 +110,7 @@ function Gallery({ filters }: GalleryProps) {
                 if (!res.ok) throw new Error('Błąd podczas usuwania zdjęcia');
                 setPhotoToDelete(null);
                 setPhotos(prev => prev.filter(p => p.id !== photoId));
+                navigate(previousLocationRef.current || '/photos');
             })
             .catch(err => alert(err.message));
     };
@@ -81,47 +121,56 @@ function Gallery({ filters }: GalleryProps) {
         600: 1
     };
 
+    if (loading && photos.length === 0) return <p>Ładowanie...</p>;
     if (error) return <p>Błąd: {error}</p>;
 
     return (
         <>
-            <InfiniteScroll
-                dataLength={photos.length}
-                next={loadPhotosRef.current}
-                hasMore={hasMore}
-                loader={<p style={{ textAlign: 'center' }}>Ładowanie...</p>}
-                endMessage={<p style={{ textAlign: 'center' }}>Koniec wyników</p>}
-                scrollableTarget="gallery-scroll"
-                scrollThreshold={0.9}
+            <Masonry
+                breakpointCols={breakpointColumnsObj}
+                className="gallery"
+                columnClassName="gallery-column"
             >
-                <Masonry
-                    breakpointCols={breakpointColumnsObj}
-                    className="gallery"
-                    columnClassName="gallery-column"
-                >
-                    {photos.map(photo => (
-                        <div className="photo" key={photo.id} onClick={() => setSelectedPhoto(photo)}>
-                            <img
-                                src={`http://localhost:8080${photo.imageUrl}`}
-                                alt={`${photo.type} - ${photo.color}`}
-                                loading="lazy"
-                            />
-                        </div>
-                    ))}
-                </Masonry>
-            </InfiniteScroll>
+                {photos.map(photo => (
+                    <div
+                        className="photo"
+                        key={photo.id}
+                        onClick={() => {
+                            if (!previousLocationRef.current) {
+                                previousLocationRef.current = location.pathname + location.search;
+                            }
+                            navigate(`/photos/${photo.id}`);
+                        }}
+                    >
+                        <img
+                            src={`http://localhost:8080${photo.imageUrl}`}
+                            alt={`${photo.type} - ${photo.color}`}
+                            loading="lazy"
+                        />
+                    </div>
+                ))}
+            </Masonry>
+
+            {hasMore && (
+                <div ref={sentinelRef} style={{ height: '1px' }} />
+            )}
 
             {selectedPhoto && (
                 <PhotoModal
                     photo={selectedPhoto}
-                    onClose={() => setSelectedPhoto(null)}
+                    onClose={() => {
+                        setSelectedPhoto(null);
+                        navigate(previousLocationRef.current || '/photos');
+                        setTimeout(() => {
+                            previousLocationRef.current = null;
+                        }, 0);
+                    }}
                     onDelete={() => {
                         setPhotoToDelete(selectedPhoto);
                         setSelectedPhoto(null);
                     }}
                     onEdit={() => {
                         setPhotoToEdit(selectedPhoto);
-                        setSelectedPhoto(null);
                     }}
                 />
             )}
@@ -136,8 +185,13 @@ function Gallery({ filters }: GalleryProps) {
             {photoToEdit && (
                 <EditPhotoForm
                     photo={photoToEdit}
-                    onClose={() => setPhotoToEdit(null)}
-                    onSave={() => loadPhotos(0, true)}
+                    onClose={() => {
+                        setPhotoToEdit(null);
+                        if (photoToEdit) {
+                            setSelectedPhoto(photoToEdit);
+                        }
+                    }}
+                    onSave={() => fetchPhotos(0, true)}
                 />
             )}
         </>

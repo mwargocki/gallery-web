@@ -8,6 +8,7 @@ import LoginForm from './components/LoginForm';
 import UploadForm from './components/UploadForm';
 import AddUserForm from './components/AddUserForm';
 import BackToTopButton from './components/BackToTopButton';
+import { Routes, Route, useLocation, Navigate } from 'react-router-dom';
 
 function App() {
     const [authenticated, setAuthenticated] = useState<boolean>(isLoggedIn());
@@ -15,9 +16,10 @@ function App() {
     const [showUpload, setShowUpload] = useState<boolean>(false);
     const [showAddUser, setShowAddUser] = useState<boolean>(false);
 
-    // Odczytaj filtry z URL przy starcie
+    const location = useLocation();
+
     const [filters, setFilters] = useState<Filters>(() => {
-        const params = new URLSearchParams(window.location.search);
+        const params = new URLSearchParams(location.search);
         return {
             color: params.get('color') || undefined,
             type: params.get('type') || undefined,
@@ -45,7 +47,11 @@ function App() {
             <main className="main">
                 <Sidebar filters={filters} onChange={setFilters} />
                 <div id="gallery-scroll" className="gallery-scroll">
-                    <Gallery filters={filters} />
+                    <Routes>
+                        <Route path="/" element={<Navigate to="/photos" />} />
+                        <Route path="/photos" element={<Gallery filters={filters} />} />
+                        <Route path="/photos/:photoId" element={<Gallery filters={filters} />} />
+                    </Routes>
                 </div>
             </main>
 
