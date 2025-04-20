@@ -8,20 +8,20 @@ interface Props {
     onClose: () => void;
     onDelete?: () => void;
     onEdit?: () => void;
+    isEditing?: boolean;
 }
 
-function PhotoModal({ photo, onClose, onDelete, onEdit }: Props) {
+function PhotoModal({ photo, onClose, onDelete, onEdit, isEditing = false }: Props) {
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
-            if (e.key === 'Escape') {
+            if (e.key === 'Escape' && !isEditing) {
                 e.preventDefault();
                 onClose();
             }
         };
-
         window.addEventListener('keydown', handleKeyDown);
         return () => window.removeEventListener('keydown', handleKeyDown);
-    }, [onClose]);
+    }, [onClose, isEditing]);
 
     return (
         <div className="photo-modal-backdrop" onClick={onClose}>
