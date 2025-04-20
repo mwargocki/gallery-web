@@ -6,6 +6,8 @@ import { useState } from 'react';
 import { isLoggedIn, clearToken } from './utils/auth';
 import LoginForm from './components/LoginForm';
 import UploadForm from './components/UploadForm';
+import BackToTopButton from './components/BackToTopButton';
+import EditPhotoForm from './components/EditPhotoForm';
 
 function App() {
     const [filters, setFilters] = useState<Filters>({});
@@ -50,6 +52,8 @@ function App() {
                     onClose={() => setShowUpload(false)}
                 />
             )}
+
+            <BackToTopButton />
         </div>
     );
 }
