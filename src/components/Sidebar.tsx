@@ -48,12 +48,19 @@ function Sidebar({ filters, onChange }: FilterProps) {
         navigate({ search: params.toString() }, { replace: true });
     };
 
+    const resetFilters = () => {
+        onChange({});
+        navigate({ search: '' }, { replace: true });
+    };
+
     return (
         <aside className="sidebar">
+            <p className="sidebar-section-title">Atrybuty</p>
+
             <div className="sidebar-item tight">
                 <Palette size={20} />
                 <select value={filters.color || ''} onChange={(e) => handleChange('color', e.target.value)}>
-                    <option value="">Wszystkie</option>
+                    <option value="">Kolor</option>
                     {colors.map(color => <option key={color}>{color}</option>)}
                 </select>
             </div>
@@ -61,7 +68,7 @@ function Sidebar({ filters, onChange }: FilterProps) {
             <div className="sidebar-item tight">
                 <Hammer size={20} />
                 <select value={filters.material || ''} onChange={(e) => handleChange('material', e.target.value)}>
-                    <option value="">Wszystkie</option>
+                    <option value="">Materiał</option>
                     {materials.map(m => <option key={m}>{m}</option>)}
                 </select>
             </div>
@@ -69,7 +76,7 @@ function Sidebar({ filters, onChange }: FilterProps) {
             <div className="sidebar-item tight">
                 <Layers size={20} />
                 <select value={filters.type || ''} onChange={(e) => handleChange('type', e.target.value)}>
-                    <option value="">Wszystkie</option>
+                    <option value="">Typ</option>
                     {types.map(type => <option key={type}>{type}</option>)}
                 </select>
             </div>
@@ -95,6 +102,10 @@ function Sidebar({ filters, onChange }: FilterProps) {
                     onChange={(e) => handleChange('maxHeight', e.target.value)}
                 />
             </div>
+
+            <button className="reset-button" onClick={resetFilters}>
+                Resetuj filtry
+            </button>
         </aside>
     );
 }
