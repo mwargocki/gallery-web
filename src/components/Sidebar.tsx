@@ -1,5 +1,11 @@
 import './Sidebar.css';
 import { useEffect, useState } from 'react';
+import {
+    Palette,
+    Hammer,
+    Layers,
+    Ruler
+} from 'lucide-react';
 
 interface FilterProps {
     onChange: (filters: Filters) => void;
@@ -33,47 +39,49 @@ function Sidebar({ onChange }: FilterProps) {
 
     return (
         <aside className="sidebar">
-            <h2>Filtry</h2>
+            <p className="sidebar-section-title">Atrybuty</p>
 
-            <div className="filter-group">
-                <label>Kolor</label>
+            <div className="sidebar-item tight">
+                <Palette size={20} />
                 <select onChange={(e) => handleChange('color', e.target.value)}>
-                    <option value="">Wszystkie</option>
+                    <option value="">Kolor</option>
                     {colors.map(color => <option key={color}>{color}</option>)}
                 </select>
             </div>
 
-            <div className="filter-group">
-                <label>Typ</label>
-                <select onChange={(e) => handleChange('type', e.target.value)}>
-                    <option value="">Wszystkie</option>
-                    {types.map(type => <option key={type}>{type}</option>)}
-                </select>
-            </div>
-
-            <div className="filter-group">
-                <label>Materiał</label>
+            <div className="sidebar-item tight">
+                <Hammer size={20} />
                 <select onChange={(e) => handleChange('material', e.target.value)}>
-                    <option value="">Wszystkie</option>
+                    <option value="">Materiał</option>
                     {materials.map(m => <option key={m}>{m}</option>)}
                 </select>
             </div>
 
-            <div className="filter-group">
-                <label>Wysokość (min)</label>
+            <div className="sidebar-item tight">
+                <Layers size={20} />
+                <select onChange={(e) => handleChange('type', e.target.value)}>
+                    <option value="">Typ</option>
+                    {types.map(type => <option key={type}>{type}</option>)}
+                </select>
+            </div>
+
+            <p className="sidebar-section-title">Wysokość</p>
+
+            <div className="sidebar-item tight">
+                <Ruler size={20} />
                 <input
                     type="number"
+                    placeholder="min (cm)"
                     onChange={(e) => handleChange('minHeight', e.target.value)}
-                    placeholder="np. 100"
                 />
             </div>
 
-            <div className="filter-group">
-                <label>Wysokość (max)</label>
+            <div className="sidebar-item tight">
+                <Ruler size={20} />
                 <input
                     type="number"
+                    placeholder="max (cm)"
                     onChange={(e) => handleChange('maxHeight', e.target.value)}
-                    placeholder="np. 300"
                 />
             </div>
         </aside>

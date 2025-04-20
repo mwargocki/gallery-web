@@ -1,43 +1,93 @@
 .sidebar {
-    width: 250px;
-    padding: 1.5rem;
-    background-color: #ffffff;
-    border-right: 1px solid #e5e5e5;
+    width: 240px;
+    min-width: 240px;
+    padding: 1.5rem 1rem;
+    background-color: #f9fafb;
+    border-right: 1px solid #e0e0e0;
+    box-sizing: border-box;
     overflow-y: auto;
-    min-width: 250px;
-    flex-shrink: 0;
 }
 
-.sidebar h2 {
-    font-size: 1.2rem;
-    margin-bottom: 1rem;
+.sidebar-section-title {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    font-weight: 600;
+    color: #9ca3af;
+    letter-spacing: 0.04em;
+    margin: 1.2rem 0 0.5rem 0.6rem;
 }
 
-.filter-group {
-    margin-bottom: 1rem;
+.sidebar-item {
     display: flex;
-    flex-direction: column;
+    align-items: center;
+    gap: 0.6rem;
+    margin-bottom: 1rem;
+    padding: 0.5rem 0.6rem;
+    border-radius: 8px;
+    transition: background-color 0.2s ease;
 }
 
-.filter-group label {
+.sidebar-item.tight {
+    margin-bottom: 0.6rem;
+}
+
+.sidebar-item:hover {
+    background-color: #f3f4f6;
+}
+
+.sidebar-item svg {
+    width: 20px;
+    min-width: 20px;
+    text-align: center;
+    color: #4b5563;
+}
+
+.sidebar-item select,
+.sidebar-item input {
+    width: 100%;
+    max-width: 100%;
+    padding: 0.4rem 0.6rem;
     font-size: 0.9rem;
-    font-weight: 500;
-    margin-bottom: 0.3rem;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    background-color: white;
+    color: #374151;
+    box-sizing: border-box;
 }
 
-.filter-group select,
-.filter-group input {
-    padding: 0.4rem;
-    font-size: 0.9rem;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+/* Usunięcie strzałek z inputów typu number */
+.sidebar-item input::-webkit-outer-spin-button,
+.sidebar-item input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
 }
 
-/* Responsywność: na telefonie Sidebar na pełną szerokość */
+.sidebar-item input[type="number"] {
+    -moz-appearance: textfield;
+}
+
+.sidebar-item select:focus,
+.sidebar-item input:focus {
+    outline: none;
+    border-color: #5c7cfa;
+    box-shadow: 0 0 0 2px rgba(92, 124, 250, 0.2);
+}
+
+/* Scrollbar (opcjonalny) */
+.sidebar::-webkit-scrollbar {
+    width: 6px;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+}
+
+/* Mobilka */
 @media (max-width: 768px) {
     .sidebar {
         width: 100%;
         border-right: none;
-        border-bottom: 1px solid #e5e5e5;
+        border-bottom: 1px solid #e0e0e0;
     }
 }

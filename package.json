@@ -11,6 +11,7 @@
     "@types/node": "^16.18.126",
     "@types/react": "^19.1.2",
     "@types/react-dom": "^19.1.2",
+    "lucide-react": "^0.501.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-infinite-scroll-component": "^6.1.0",
