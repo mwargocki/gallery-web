@@ -20,15 +20,16 @@ function UploadForm({ onUploadSuccess, onClose }: Props) {
     const [materialOptions, setMaterialOptions] = useState<string[]>([]);
 
     useEffect(() => {
-        fetch('http://localhost:8080/api/filters/colors')
+
+        fetch(`${process.env.REACT_APP_API_URL}/api/filters/colors`)
             .then(res => res.json())
             .then(setColorOptions);
 
-        fetch('http://localhost:8080/api/filters/types')
+        fetch(`${process.env.REACT_APP_API_URL}/api/filters/types`)
             .then(res => res.json())
             .then(setTypeOptions);
 
-        fetch('http://localhost:8080/api/filters/materials')
+        fetch(`${process.env.REACT_APP_API_URL}/api/filters/materials`)
             .then(res => res.json())
             .then(setMaterialOptions);
     }, []);
@@ -59,7 +60,7 @@ function UploadForm({ onUploadSuccess, onClose }: Props) {
             )
         );
 
-        fetch('http://localhost:8080/api/photos', {
+        fetch(`${process.env.REACT_APP_API_URL}/api/photos`, {
             method: 'POST',
             headers: {
                 Authorization: `Bearer ${getToken()!}`

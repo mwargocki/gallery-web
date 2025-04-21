@@ -22,7 +22,7 @@ function AddUserForm({ onClose }: Props) {
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
 
-        fetch('http://localhost:8080/api/users', {
+        fetch(`${process.env.REACT_APP_API_URL}/api/users`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

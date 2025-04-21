@@ -45,7 +45,7 @@ function Gallery({ filters }: GalleryProps) {
         params.append('page', String(pageToLoad));
         params.append('size', '12');
 
-        fetch(`http://localhost:8080/api/photos?${params.toString()}`)
+        fetch(`${process.env.REACT_APP_API_URL}/api/photos?${params.toString()}`)
             .then(res => {
                 if (!res.ok) throw new Error('Nie udało się pobrać zdjęć');
                 return res.json();
@@ -87,7 +87,7 @@ function Gallery({ filters }: GalleryProps) {
 
     useEffect(() => {
         if (photoId) {
-            fetch(`http://localhost:8080/api/photos/${photoId}`)
+            fetch(`${process.env.REACT_APP_API_URL}/api/photos/${photoId}`)
                 .then(res => {
                     if (!res.ok) throw new Error('Nie znaleziono zdjęcia');
                     return res.json();
@@ -101,7 +101,7 @@ function Gallery({ filters }: GalleryProps) {
     }, [photoId, navigate]);
 
     const handleDelete = (photoId: number) => {
-        fetch(`http://localhost:8080/api/photos/${photoId}`, {
+        fetch(`${process.env.REACT_APP_API_URL}/api/photos/${photoId}`, {
             method: 'DELETE',
             headers: { Authorization: `Bearer ${getToken()!}` },
             credentials: 'include'
@@ -143,7 +143,7 @@ function Gallery({ filters }: GalleryProps) {
                         }}
                     >
                         <img
-                            src={`http://localhost:8080${photo.imageUrl}`}
+                            src={`${process.env.REACT_APP_API_URL}${photo.imageUrl}`}
                             alt={`${photo.type} - ${photo.color}`}
                             loading="lazy"
                         />

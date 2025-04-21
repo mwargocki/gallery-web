@@ -29,9 +29,9 @@ function Sidebar({ filters, onChange }: FilterProps) {
     const navigate = useNavigate();
 
     useEffect(() => {
-        fetch('http://localhost:8080/api/filters/colors').then(res => res.json()).then(setColors);
-        fetch('http://localhost:8080/api/filters/types').then(res => res.json()).then(setTypes);
-        fetch('http://localhost:8080/api/filters/materials').then(res => res.json()).then(setMaterials);
+        fetch(`${process.env.REACT_APP_API_URL}/api/filters/colors`).then(res => res.json()).then(setColors);
+        fetch(`${process.env.REACT_APP_API_URL}/api/filters/types`).then(res => res.json()).then(setTypes);
+        fetch(`${process.env.REACT_APP_API_URL}/api/filters/materials`).then(res => res.json()).then(setMaterials);
     }, []);
 
     const handleChange = (key: keyof Filters, value: string) => {

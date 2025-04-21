@@ -30,7 +30,7 @@ function EditPhotoForm({ photo, onClose, onSave }: Props) {
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
 
-        fetch(`http://localhost:8080/api/photos/${photo.id}`, {
+        fetch(`${process.env.REACT_APP_API_URL}/api/photos/${photo.id}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
