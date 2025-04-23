@@ -143,7 +143,7 @@ function Gallery({ filters }: GalleryProps) {
                         }}
                     >
                         <img
-                            src={`${process.env.REACT_APP_API_URL}${photo.thumbnailUrl ?? photo.imageUrl}`}
+                            src={`${process.env.REACT_APP_API_URL}/api/images/${photo.thumbnail ?? photo.filename}`}
                             alt={`${photo.type} - ${photo.color}`}
                             loading="lazy"
                         />

@@ -26,7 +26,7 @@ function PhotoModal({ photo, onClose, onDelete, onEdit, isEditing = false }: Pro
     return (
         <div className="photo-modal-backdrop" onClick={onClose}>
             <div className="photo-modal" onClick={e => e.stopPropagation()}>
-                <img src={`${process.env.REACT_APP_API_URL}${photo.imageUrl}`} alt={photo.type} />
+                <img src={`${process.env.REACT_APP_API_URL}/api/images/${photo.filename}`} alt={photo.type} />
                 <div className="photo-details">
                     <p><strong>ID:</strong> {photo.id}</p>
                     <p><strong>Typ:</strong> {photo.type}</p>
