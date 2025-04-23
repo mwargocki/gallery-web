@@ -110,6 +110,7 @@ function Gallery({ filters, setTotalElements }: GalleryProps) {
             .then(res => {
                 if (!res.ok) throw new Error('Błąd podczas usuwania zdjęcia');
                 setPhotoToDelete(null);
+                setSelectedPhoto(null);
                 setPhotos(prev => prev.filter(p => p.id !== photoId));
                 navigate(previousLocationRef.current || '/photos');
                 // Po usunięciu zdjęcia odśwież dane
