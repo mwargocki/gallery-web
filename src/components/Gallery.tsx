@@ -11,9 +11,10 @@ import { useNavigate, useParams, useLocation } from 'react-router-dom';
 
 interface GalleryProps {
     filters: Filters;
+    setTotalElements: (value: number) => void; // 👈 dodany prop
 }
 
-function Gallery({ filters }: GalleryProps) {
+function Gallery({ filters, setTotalElements }: GalleryProps) {
     const [photos, setPhotos] = useState<Photo[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -29,7 +30,6 @@ function Gallery({ filters }: GalleryProps) {
     const navigate = useNavigate();
     const location = useLocation();
     const { photoId } = useParams();
-
     const previousLocationRef = useRef<string | null>(null);
 
     const fetchPhotos = useCallback((pageToLoad: number, reset = false) => {
@@ -54,20 +54,21 @@ function Gallery({ filters }: GalleryProps) {
                 setPhotos(prev => reset ? data.content : [...prev, ...data.content]);
                 setHasMore(!data.last);
                 setPage(pageToLoad + 1);
+                setTotalElements(data.totalElements); // 👈 aktualizacja licznika
             })
             .catch(err => setError(err.message))
             .finally(() => {
                 setLoading(false);
                 isFetchingRef.current = false;
             });
-    }, [filters]);
+    }, [filters, setTotalElements]);
 
     useEffect(() => {
         setPhotos([]);
         setPage(0);
         setHasMore(true);
         fetchPhotos(0, true);
-    }, [JSON.stringify(filters)]);
+    }, [JSON.stringify(filters), fetchPhotos]);
 
     useEffect(() => {
         if (!hasMore || loading) return;
@@ -111,6 +112,8 @@ function Gallery({ filters }: GalleryProps) {
                 setPhotoToDelete(null);
                 setPhotos(prev => prev.filter(p => p.id !== photoId));
                 navigate(previousLocationRef.current || '/photos');
+                // Po usunięciu zdjęcia odśwież dane
+                fetchPhotos(0, true);
             })
             .catch(err => alert(err.message));
     };

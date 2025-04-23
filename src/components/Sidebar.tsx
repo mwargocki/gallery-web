@@ -4,9 +4,11 @@ import {
     Palette,
     Hammer,
     Layers,
-    Ruler
+    Ruler,
+    Camera
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { pluralizePhoto } from '../utils/format';
 
 export interface Filters {
     color?: string;
@@ -19,9 +21,10 @@ export interface Filters {
 interface FilterProps {
     filters: Filters;
     onChange: (filters: Filters) => void;
+    totalElements: number;
 }
 
-function Sidebar({ filters, onChange }: FilterProps) {
+function Sidebar({ filters, onChange, totalElements }: FilterProps) {
     const [colors, setColors] = useState<string[]>([]);
     const [types, setTypes] = useState<string[]>([]);
     const [materials, setMaterials] = useState<string[]>([]);
@@ -106,6 +109,11 @@ function Sidebar({ filters, onChange }: FilterProps) {
             <button className="reset-button" onClick={resetFilters}>
                 Resetuj filtry
             </button>
+
+            <div className="sidebar-counter">
+                <Camera size={18} strokeWidth={1.8} />
+                <span>{pluralizePhoto(totalElements)}</span>
+            </div>
         </aside>
     );
 }

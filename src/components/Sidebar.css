@@ -109,3 +109,13 @@
         border-bottom: 1px solid #e0e0e0;
     }
 }
+
+.sidebar-counter {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 1.5rem;
+    font-size: 0.9rem;
+    color: #374151;
+    gap: 0.4rem;
+}

@@ -15,6 +15,7 @@ function App() {
     const [showLogin, setShowLogin] = useState<boolean>(false);
     const [showUpload, setShowUpload] = useState<boolean>(false);
     const [showAddUser, setShowAddUser] = useState<boolean>(false);
+    const [totalElements, setTotalElements] = useState<number>(0);
 
     const location = useLocation();
 
@@ -45,12 +46,12 @@ function App() {
             />
 
             <main className="main">
-                <Sidebar filters={filters} onChange={setFilters} />
+                <Sidebar filters={filters} onChange={setFilters} totalElements={totalElements} />
                 <div id="gallery-scroll" className="gallery-scroll">
                     <Routes>
                         <Route path="/" element={<Navigate to="/photos" />} />
-                        <Route path="/photos" element={<Gallery filters={filters} />} />
-                        <Route path="/photos/:photoId" element={<Gallery filters={filters} />} />
+                        <Route path="/photos" element={<Gallery filters={filters} setTotalElements={setTotalElements} />} />
+                        <Route path="/photos/:photoId" element={<Gallery filters={filters} setTotalElements={setTotalElements} />} />
                     </Routes>
                 </div>
             </main>
