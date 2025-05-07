@@ -22,7 +22,7 @@ function LoginForm({ onLoginSuccess, onClose }: Props) {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        fetch(`${process.env.REACT_APP_API_URL}/auth/login`, {
+        fetch(`${process.env.REACT_APP_API_URL}/api/auth/login`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ username, password }),
