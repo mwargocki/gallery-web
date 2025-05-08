@@ -148,7 +148,7 @@ function Gallery({ filters, setTotalElements }: GalleryProps) {
                     >
                         <img
                             src={`${process.env.REACT_APP_API_URL}/api/images/${photo.thumbnail ?? photo.filename}`}
-                            alt={`${photo.type} - ${photo.color}`}
+                            alt={`Zdjęcie - ${photo.id}`}
                             loading="lazy"
                         />
                     </div>
