@@ -12,7 +12,7 @@ function UploadForm({ onUploadSuccess, onClose }: Props) {
     const [color, setColor] = useState('');
     const [material, setMaterial] = useState('');
     const [type, setType] = useState('');
-    const [height, setHeight] = useState<number>(0);
+    const [height, setHeight] = useState('');
     const [error, setError] = useState<string | null>(null);
 
     const [colorOptions, setColorOptions] = useState<string[]>([]);
@@ -20,7 +20,6 @@ function UploadForm({ onUploadSuccess, onClose }: Props) {
     const [materialOptions, setMaterialOptions] = useState<string[]>([]);
 
     useEffect(() => {
-
         fetch(`${process.env.REACT_APP_API_URL}/api/filters/colors`)
             .then(res => res.json())
             .then(setColorOptions);
@@ -50,12 +49,22 @@ function UploadForm({ onUploadSuccess, onClose }: Props) {
             return;
         }
 
+        if (!height || parseInt(height, 10) <= 0) {
+            setError('Wysokość musi być większa niż 0.');
+            return;
+        }
+
         const formData = new FormData();
         formData.append('file', file);
         formData.append(
             'photo',
             new Blob(
-                [JSON.stringify({ color, material, type, height })],
+                [JSON.stringify({
+                    color,
+                    material,
+                    type,
+                    height: parseInt(height, 10)
+                })],
                 { type: 'application/json' }
             )
         );
@@ -129,9 +138,15 @@ function UploadForm({ onUploadSuccess, onClose }: Props) {
 
                 <input
                     type="number"
+                    inputMode="numeric"
                     placeholder="Wysokość (cm)"
                     value={height}
-                    onChange={e => setHeight(parseInt(e.target.value))}
+                    onChange={(e) => {
+                        const value = e.target.value;
+                        if (/^\d*$/.test(value)) {
+                            setHeight(value);
+                        }
+                    }}
                 />
 
                 <div className="upload-form-buttons">
