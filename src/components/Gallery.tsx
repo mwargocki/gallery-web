@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import Masonry from 'react-masonry-css';
 import './Gallery.css';
 import { Photo } from '../types';
@@ -11,7 +11,7 @@ import { useNavigate, useParams, useLocation } from 'react-router-dom';
 
 interface GalleryProps {
     filters: Filters;
-    setTotalElements: (value: number) => void; // 👈 dodany prop
+    setTotalElements: (value: number) => void;
 }
 
 function Gallery({ filters, setTotalElements }: GalleryProps) {
@@ -54,7 +54,7 @@ function Gallery({ filters, setTotalElements }: GalleryProps) {
                 setPhotos(prev => reset ? data.content : [...prev, ...data.content]);
                 setHasMore(!data.last);
                 setPage(pageToLoad + 1);
-                setTotalElements(data.totalElements); // 👈 aktualizacja licznika
+                setTotalElements(data.totalElements);
             })
             .catch(err => setError(err.message))
             .finally(() => {
@@ -113,10 +113,41 @@ function Gallery({ filters, setTotalElements }: GalleryProps) {
                 setSelectedPhoto(null);
                 setPhotos(prev => prev.filter(p => p.id !== photoId));
                 navigate(previousLocationRef.current || '/photos');
-                // Po usunięciu zdjęcia odśwież dane
                 fetchPhotos(0, true);
             })
             .catch(err => alert(err.message));
+    };
+
+    const handlePrev = () => {
+        if (!selectedPhoto) return;
+        const index = photos.findIndex(p => p.id === selectedPhoto.id);
+        if (index > 0) {
+            const prevPhoto = photos[index - 1];
+            setSelectedPhoto(prevPhoto);
+            navigate(`/photos/${prevPhoto.id}`);
+        }
+    };
+
+    const handleNext = () => {
+        if (!selectedPhoto) return;
+        const index = photos.findIndex(p => p.id === selectedPhoto.id);
+        const nextIndex = index + 1;
+
+        if (nextIndex < photos.length) {
+            const nextPhoto = photos[nextIndex];
+            setSelectedPhoto(nextPhoto);
+            navigate(`/photos/${nextPhoto.id}`);
+        } else if (hasMore) {
+            fetchPhotos(page);
+            const checkNextPhoto = setInterval(() => {
+                if (photos.length > nextIndex) {
+                    const nextPhoto = photos[nextIndex];
+                    setSelectedPhoto(nextPhoto);
+                    navigate(`/photos/${nextPhoto.id}`);
+                    clearInterval(checkNextPhoto);
+                }
+            }, 100);
+        }
     };
 
     const breakpointColumnsObj = {
@@ -124,6 +155,10 @@ function Gallery({ filters, setTotalElements }: GalleryProps) {
         1024: 3,
         600: 2
     };
+
+    const currentIndex = selectedPhoto ? photos.findIndex(p => p.id === selectedPhoto.id) : -1;
+    const canGoPrev = currentIndex > 0;
+    const canGoNext = currentIndex < photos.length - 1 || hasMore;
 
     if (loading && photos.length === 0) return <p>Ładowanie...</p>;
     if (error) return <p>Błąd: {error}</p>;
@@ -155,9 +190,7 @@ function Gallery({ filters, setTotalElements }: GalleryProps) {
                 ))}
             </Masonry>
 
-            {hasMore && (
-                <div ref={sentinelRef} style={{ height: '1px' }} />
-            )}
+            {hasMore && <div ref={sentinelRef} style={{ height: '1px' }} />}
 
             {selectedPhoto && (
                 <PhotoModal
@@ -169,13 +202,11 @@ function Gallery({ filters, setTotalElements }: GalleryProps) {
                             previousLocationRef.current = null;
                         }, 0);
                     }}
-                    onDelete={() => {
-                        setPhotoToDelete(selectedPhoto);
-                    }}
-                    onEdit={() => {
-                        setPhotoToEdit(selectedPhoto);
-                    }}
+                    onDelete={() => setPhotoToDelete(selectedPhoto)}
+                    onEdit={() => setPhotoToEdit(selectedPhoto)}
                     isEditing={!!photoToEdit || !!photoToDelete}
+                    onPrev={canGoPrev ? handlePrev : undefined}
+                    onNext={canGoNext ? handleNext : undefined}
                 />
             )}
 
