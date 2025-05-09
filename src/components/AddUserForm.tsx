@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react';
 import './AddUserForm.css';
 import { getToken } from '../utils/auth';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
     onClose: () => void;
 }
 
 function AddUserForm({ onClose }: Props) {
+    const { t } = useTranslation();
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState<string | null>(null);
@@ -32,7 +34,7 @@ function AddUserForm({ onClose }: Props) {
             credentials: 'include'
         })
             .then(res => {
-                if (!res.ok) throw new Error('Nie udało się dodać użytkownika');
+                if (!res.ok) throw new Error(t('addUser.error'));
                 return res.json();
             })
             .then(() => {
@@ -44,24 +46,24 @@ function AddUserForm({ onClose }: Props) {
     return (
         <div className="add-user-modal-backdrop" onClick={onClose}>
             <form className="add-user-modal add-user-form-inner" onClick={e => e.stopPropagation()} onSubmit={handleSubmit}>
-                <h2>Dodaj użytkownika</h2>
+                <h2>{t('addUser.title')}</h2>
                 {error && <p className="error">{error}</p>}
                 <input
                     type="text"
-                    placeholder="Login"
+                    placeholder={t('addUser.username')}
                     value={username}
                     onChange={e => setUsername(e.target.value)}
                     autoFocus
                 />
                 <input
                     type="password"
-                    placeholder="Hasło"
+                    placeholder={t('addUser.password')}
                     value={password}
                     onChange={e => setPassword(e.target.value)}
                 />
                 <div className="add-user-form-buttons">
-                    <button type="submit">Dodaj</button>
-                    <button type="button" onClick={onClose}>Anuluj</button>
+                    <button type="submit">{t('addUser.submit')}</button>
+                    <button type="button" onClick={onClose}>{t('addUser.cancel')}</button>
                 </div>
             </form>
         </div>

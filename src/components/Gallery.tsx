@@ -8,6 +8,7 @@ import EditPhotoForm from './EditPhotoForm';
 import { Filters } from './Sidebar';
 import { getToken } from '../utils/auth';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 interface GalleryProps {
     filters: Filters;
@@ -32,6 +33,8 @@ function Gallery({ filters, setTotalElements }: GalleryProps) {
     const { photoId } = useParams();
     const previousLocationRef = useRef<string | null>(null);
 
+    const { t } = useTranslation();
+
     const fetchPhotos = useCallback((pageToLoad: number, reset = false) => {
         if (isFetchingRef.current) return;
         isFetchingRef.current = true;
@@ -47,7 +50,7 @@ function Gallery({ filters, setTotalElements }: GalleryProps) {
 
         fetch(`${process.env.REACT_APP_API_URL}/api/photos?${params.toString()}`)
             .then(res => {
-                if (!res.ok) throw new Error('Nie udało się pobrać zdjęć');
+                if (!res.ok) throw new Error(t('gallery.fetchError'));
                 return res.json();
             })
             .then(data => {
@@ -90,7 +93,7 @@ function Gallery({ filters, setTotalElements }: GalleryProps) {
         if (photoId) {
             fetch(`${process.env.REACT_APP_API_URL}/api/photos/${photoId}`)
                 .then(res => {
-                    if (!res.ok) throw new Error('Nie znaleziono zdjęcia');
+                    if (!res.ok) throw new Error(t('gallery.notFound'));
                     return res.json();
                 })
                 .then(data => setSelectedPhoto(data))
@@ -108,7 +111,7 @@ function Gallery({ filters, setTotalElements }: GalleryProps) {
             credentials: 'include'
         })
             .then(res => {
-                if (!res.ok) throw new Error('Błąd podczas usuwania zdjęcia');
+                if (!res.ok) throw new Error(t('gallery.deleteError'));
                 setPhotoToDelete(null);
                 setSelectedPhoto(null);
                 setPhotos(prev => prev.filter(p => p.id !== photoId));
@@ -160,8 +163,8 @@ function Gallery({ filters, setTotalElements }: GalleryProps) {
     const canGoPrev = currentIndex > 0;
     const canGoNext = currentIndex < photos.length - 1 || hasMore;
 
-    if (loading && photos.length === 0) return <p>Ładowanie...</p>;
-    if (error) return <p>Błąd: {error}</p>;
+    if (loading && photos.length === 0) return <p>{t('gallery.loading')}</p>;
+    if (error) return <p>{t('gallery.error', { error })}</p>;
 
     return (
         <>
@@ -183,7 +186,7 @@ function Gallery({ filters, setTotalElements }: GalleryProps) {
                     >
                         <img
                             src={`${process.env.REACT_APP_API_URL}/api/images/${photo.thumbnail ?? photo.filename}`}
-                            alt={`Zdjęcie - ${photo.id}`}
+                            alt={t('gallery.alt', { id: photo.id })}
                             loading="lazy"
                         />
                     </div>

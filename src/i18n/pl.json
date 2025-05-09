@@ -1,0 +1,89 @@
+{
+  "header": {
+    "title": "Galeria zdjęć",
+    "upload_photo": "Dodaj zdjęcie",
+    "new_user": "Nowy użytkownik",
+    "logout": "Wyloguj",
+    "login": "Zaloguj"
+  },
+  "login": {
+    "title": "Zaloguj się",
+    "username": "Login",
+    "password": "Hasło",
+    "submit": "Zaloguj",
+    "invalid": "Błędny login lub hasło"
+  },
+  "addUser": {
+    "title": "Dodaj użytkownika",
+    "username": "Login",
+    "password": "Hasło",
+    "submit": "Dodaj",
+    "cancel": "Anuluj",
+    "error": "Nie udało się dodać użytkownika"
+  },
+  "upload": {
+    "title": "Dodaj nowe zdjęcie",
+    "color": "Kolor",
+    "material": "Materiał",
+    "type": "Typ",
+    "height": "Wysokość (cm)",
+    "submit": "Dodaj",
+    "cancel": "Anuluj",
+    "errors": {
+      "noFile": "Wybierz plik ze zdjęciem.",
+      "invalidHeight": "Wysokość musi być większa niż 0.",
+      "uploadFailed": "Błąd podczas przesyłania zdjęcia"
+    }
+  },
+  "editPhoto": {
+    "title": "Edytuj atrybuty",
+    "color": "Kolor",
+    "material": "Materiał",
+    "type": "Typ",
+    "height": "Wysokość (cm)",
+    "save": "Zapisz",
+    "cancel": "Anuluj",
+    "error": "Nie udało się zaktualizować zdjęcia"
+  },
+  "deleteConfirm": {
+    "title": "Czy na pewno chcesz usunąć to zdjęcie?",
+    "confirm": "Tak, usuń",
+    "cancel": "Anuluj"
+  },
+  "photo": {
+    "id": "Zdjęcie",
+    "type": "Typ",
+    "color": "Kolor",
+    "material": "Materiał",
+    "height": "Wysokość",
+    "added": "Dodano",
+    "edit": "Edytuj",
+    "delete": "Usuń zdjęcie",
+    "close": "Zamknij",
+    "alt": "Zdjęcie - {{id}}"
+  },
+  "sidebar": {
+    "attributes": "Atrybuty",
+    "color": "Kolor",
+    "material": "Materiał",
+    "type": "Typ",
+    "height": "Wysokość",
+    "min": "min (cm)",
+    "max": "max (cm)",
+    "reset": "Resetuj filtry"
+  },
+  "counter": {
+    "count_0": "zdjęć",
+    "count_1": "zdjęcie",
+    "count_234": "zdjęcia",
+    "count_other": "zdjęć"
+  },
+  "gallery": {
+    "loading": "Ładowanie...",
+    "error": "Błąd: {{error}}",
+    "fetchError": "Nie udało się pobrać zdjęć",
+    "notFound": "Nie znaleziono zdjęcia",
+    "deleteError": "Błąd podczas usuwania zdjęcia",
+    "alt": "Zdjęcie - {{id}}"
+  }
+}

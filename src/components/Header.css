@@ -40,3 +40,23 @@
         align-self: flex-end;
     }
 }
+
+.language-switcher {
+    display: flex;
+    align-items: center;
+    margin-right: 12px;
+}
+
+.language-switcher img {
+    width: 24px;
+    height: 16px;
+    margin-right: 8px;
+    cursor: pointer;
+    border: 1px solid #ccc;
+    border-radius: 2px;
+    transition: transform 0.1s ease-in-out;
+}
+
+.language-switcher img:hover {
+    transform: scale(1.1);
+}

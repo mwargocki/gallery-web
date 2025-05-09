@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Photo } from '../types';
 import { getToken } from '../utils/auth';
 import './EditPhotoForm.css';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
     photo: Photo;
@@ -10,6 +11,8 @@ interface Props {
 }
 
 function EditPhotoForm({ photo, onClose, onSave }: Props) {
+    const { t } = useTranslation();
+
     const [color, setColor] = useState(photo.color);
     const [material, setMaterial] = useState(photo.material);
     const [type, setType] = useState(photo.type);
@@ -40,7 +43,7 @@ function EditPhotoForm({ photo, onClose, onSave }: Props) {
             credentials: 'include'
         })
             .then(res => {
-                if (!res.ok) throw new Error('Nie udało się zaktualizować zdjęcia');
+                if (!res.ok) throw new Error(t('editPhoto.error'));
                 return res.json();
             })
             .then(() => {
@@ -53,15 +56,37 @@ function EditPhotoForm({ photo, onClose, onSave }: Props) {
     return (
         <div className="edit-modal-backdrop" onClick={onClose}>
             <form className="edit-modal edit-photo-form-inner" onClick={e => e.stopPropagation()} onSubmit={handleSubmit}>
-                <h2>Edytuj atrybuty</h2>
+                <h2>{t('editPhoto.title')}</h2>
                 {error && <p className="error">{error}</p>}
-                <input type="text" placeholder="Kolor" value={color} onChange={e => setColor(e.target.value)} />
-                <input type="text" placeholder="Materiał" value={material} onChange={e => setMaterial(e.target.value)} />
-                <input type="text" placeholder="Typ" value={type} onChange={e => setType(e.target.value)} />
-                <input type="number" placeholder="Wysokość (cm)" value={height} onChange={e => setHeight(parseInt(e.target.value))} />
+
+                <input
+                    type="text"
+                    placeholder={t('editPhoto.color')}
+                    value={color}
+                    onChange={e => setColor(e.target.value)}
+                />
+                <input
+                    type="text"
+                    placeholder={t('editPhoto.material')}
+                    value={material}
+                    onChange={e => setMaterial(e.target.value)}
+                />
+                <input
+                    type="text"
+                    placeholder={t('editPhoto.type')}
+                    value={type}
+                    onChange={e => setType(e.target.value)}
+                />
+                <input
+                    type="number"
+                    placeholder={t('editPhoto.height')}
+                    value={height}
+                    onChange={e => setHeight(parseInt(e.target.value))}
+                />
+
                 <div className="edit-photo-form-buttons">
-                    <button type="submit">Zapisz</button>
-                    <button type="button" onClick={onClose}>Anuluj</button>
+                    <button type="submit">{t('editPhoto.save')}</button>
+                    <button type="button" onClick={onClose}>{t('editPhoto.cancel')}</button>
                 </div>
             </form>
         </div>

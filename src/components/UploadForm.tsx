@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import './UploadForm.css';
 import { getToken } from '../utils/auth';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
     onUploadSuccess: () => void;
@@ -8,6 +9,8 @@ interface Props {
 }
 
 function UploadForm({ onUploadSuccess, onClose }: Props) {
+    const { t } = useTranslation();
+
     const [file, setFile] = useState<File | null>(null);
     const [color, setColor] = useState('');
     const [material, setMaterial] = useState('');
@@ -45,12 +48,12 @@ function UploadForm({ onUploadSuccess, onClose }: Props) {
         e.preventDefault();
 
         if (!file) {
-            setError('Wybierz plik ze zdjęciem.');
+            setError(t('upload.errors.noFile'));
             return;
         }
 
         if (!height || parseInt(height, 10) <= 0) {
-            setError('Wysokość musi być większa niż 0.');
+            setError(t('upload.errors.invalidHeight'));
             return;
         }
 
@@ -78,7 +81,7 @@ function UploadForm({ onUploadSuccess, onClose }: Props) {
             credentials: 'include'
         })
             .then(res => {
-                if (!res.ok) throw new Error('Błąd podczas przesyłania zdjęcia');
+                if (!res.ok) throw new Error(t('upload.errors.uploadFailed'));
                 return res.json();
             })
             .then(() => {
@@ -91,7 +94,7 @@ function UploadForm({ onUploadSuccess, onClose }: Props) {
     return (
         <div className="upload-modal-backdrop" onClick={onClose}>
             <form className="upload-modal upload-form-inner" onClick={(e) => e.stopPropagation()} onSubmit={handleSubmit}>
-                <h2>Dodaj nowe zdjęcie</h2>
+                <h2>{t('upload.title')}</h2>
                 {error && <p className="error">{error}</p>}
 
                 <input
@@ -102,7 +105,7 @@ function UploadForm({ onUploadSuccess, onClose }: Props) {
 
                 <input
                     list="colors"
-                    placeholder="Kolor"
+                    placeholder={t('upload.color')}
                     value={color}
                     onChange={e => setColor(e.target.value)}
                 />
@@ -114,7 +117,7 @@ function UploadForm({ onUploadSuccess, onClose }: Props) {
 
                 <input
                     list="materials"
-                    placeholder="Materiał"
+                    placeholder={t('upload.material')}
                     value={material}
                     onChange={e => setMaterial(e.target.value)}
                 />
@@ -126,7 +129,7 @@ function UploadForm({ onUploadSuccess, onClose }: Props) {
 
                 <input
                     list="types"
-                    placeholder="Typ"
+                    placeholder={t('upload.type')}
                     value={type}
                     onChange={e => setType(e.target.value)}
                 />
@@ -139,7 +142,7 @@ function UploadForm({ onUploadSuccess, onClose }: Props) {
                 <input
                     type="number"
                     inputMode="numeric"
-                    placeholder="Wysokość (cm)"
+                    placeholder={t('upload.height')}
                     value={height}
                     onChange={(e) => {
                         const value = e.target.value;
@@ -150,8 +153,8 @@ function UploadForm({ onUploadSuccess, onClose }: Props) {
                 />
 
                 <div className="upload-form-buttons">
-                    <button type="submit">Dodaj</button>
-                    <button type="button" onClick={onClose}>Anuluj</button>
+                    <button type="submit">{t('upload.submit')}</button>
+                    <button type="button" onClick={onClose}>{t('upload.cancel')}</button>
                 </div>
             </form>
         </div>

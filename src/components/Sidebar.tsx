@@ -8,7 +8,8 @@ import {
     Camera
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { pluralizePhoto } from '../utils/format';
+import { usePluralizedPhoto } from '../utils/usePluralizedPhoto';
+import { useTranslation } from 'react-i18next';
 
 export interface Filters {
     color?: string;
@@ -25,6 +26,9 @@ interface FilterProps {
 }
 
 function Sidebar({ filters, onChange, totalElements }: FilterProps) {
+    const { t } = useTranslation();
+    const pluralizePhoto = usePluralizedPhoto();
+
     const [colors, setColors] = useState<string[]>([]);
     const [types, setTypes] = useState<string[]>([]);
     const [materials, setMaterials] = useState<string[]>([]);
@@ -58,12 +62,12 @@ function Sidebar({ filters, onChange, totalElements }: FilterProps) {
 
     return (
         <aside className="sidebar">
-            <p className="sidebar-section-title">Atrybuty</p>
+            <p className="sidebar-section-title">{t('sidebar.attributes')}</p>
 
             <div className="sidebar-item tight">
                 <Palette size={20} />
                 <select value={filters.color || ''} onChange={(e) => handleChange('color', e.target.value)}>
-                    <option value="">Kolor</option>
+                    <option value="">{t('sidebar.color')}</option>
                     {colors.map(color => <option key={color}>{color}</option>)}
                 </select>
             </div>
@@ -71,7 +75,7 @@ function Sidebar({ filters, onChange, totalElements }: FilterProps) {
             <div className="sidebar-item tight">
                 <Hammer size={20} />
                 <select value={filters.material || ''} onChange={(e) => handleChange('material', e.target.value)}>
-                    <option value="">Materiał</option>
+                    <option value="">{t('sidebar.material')}</option>
                     {materials.map(m => <option key={m}>{m}</option>)}
                 </select>
             </div>
@@ -79,18 +83,18 @@ function Sidebar({ filters, onChange, totalElements }: FilterProps) {
             <div className="sidebar-item tight">
                 <Layers size={20} />
                 <select value={filters.type || ''} onChange={(e) => handleChange('type', e.target.value)}>
-                    <option value="">Typ</option>
+                    <option value="">{t('sidebar.type')}</option>
                     {types.map(type => <option key={type}>{type}</option>)}
                 </select>
             </div>
 
-            <p className="sidebar-section-title">Wysokość</p>
+            <p className="sidebar-section-title">{t('sidebar.height')}</p>
 
             <div className="sidebar-item tight">
                 <Ruler size={20} />
                 <input
                     type="number"
-                    placeholder="min (cm)"
+                    placeholder={t('sidebar.min')}
                     value={filters.minHeight ?? ''}
                     onChange={(e) => handleChange('minHeight', e.target.value)}
                 />
@@ -100,14 +104,14 @@ function Sidebar({ filters, onChange, totalElements }: FilterProps) {
                 <Ruler size={20} />
                 <input
                     type="number"
-                    placeholder="max (cm)"
+                    placeholder={t('sidebar.max')}
                     value={filters.maxHeight ?? ''}
                     onChange={(e) => handleChange('maxHeight', e.target.value)}
                 />
             </div>
 
             <button className="reset-button" onClick={resetFilters}>
-                Resetuj filtry
+                {t('sidebar.reset')}
             </button>
 
             <div className="sidebar-counter">

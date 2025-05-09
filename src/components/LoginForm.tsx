@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import './LoginForm.css';
 import { saveToken } from '../utils/auth';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
     onLoginSuccess: () => void;
@@ -8,6 +9,7 @@ interface Props {
 }
 
 function LoginForm({ onLoginSuccess, onClose }: Props) {
+    const { t } = useTranslation();
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState<string | null>(null);
@@ -28,7 +30,7 @@ function LoginForm({ onLoginSuccess, onClose }: Props) {
             body: JSON.stringify({ username, password }),
         })
             .then(res => {
-                if (!res.ok) throw new Error('Błędny login lub hasło');
+                if (!res.ok) throw new Error(t('login.invalid'));
                 return res.json();
             })
             .then(data => {
@@ -41,18 +43,18 @@ function LoginForm({ onLoginSuccess, onClose }: Props) {
     return (
         <div className="login-modal-backdrop" onClick={onClose}>
             <div className="login-modal" onClick={e => e.stopPropagation()}>
-                <h2>Zaloguj się</h2>
+                <h2>{t('login.title')}</h2>
                 {error && <p className="error">{error}</p>}
                 <form onSubmit={handleSubmit} className="login-form-inner">
                     <input
                         type="text"
-                        placeholder="Login"
+                        placeholder={t('login.username')}
                         value={username}
                         onChange={e => setUsername(e.target.value)}
                         autoFocus
                     />
-                    <input type="password" placeholder="Hasło" value={password} onChange={e => setPassword(e.target.value)} />
-                    <button type="submit">Zaloguj</button>
+                    <input type="password" placeholder={t('login.password')} value={password} onChange={e => setPassword(e.target.value)} />
+                    <button type="submit">{t('login.submit')}</button>
                 </form>
             </div>
         </div>
