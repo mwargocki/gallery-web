@@ -85,5 +85,29 @@
     "notFound": "Photo not found",
     "deleteError": "Error deleting photo",
     "alt": "Photo - {{id}}"
+  },
+  "color": {
+    "czerwony": "Red",
+    "zielony": "Green",
+    "niebieski": "Blue",
+    "czarny": "Black",
+    "biały": "White",
+    "szary": "Gray",
+    "żółty": "Yellow",
+    "beżowy": "Beige",
+    "brązowy": "Brown"
+  },
+  "type": {
+    "figurka": "Figurine",
+    "obraz": "Painting",
+    "magnes": "Magnet"
+  },
+  "material": {
+    "drewno": "Wood",
+    "metal": "Metal",
+    "szkło": "Glass",
+    "plastik": "Plastic",
+    "kamień": "Stone",
+    "tkanina": "Fabric"
   }
 }

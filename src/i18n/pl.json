@@ -85,5 +85,29 @@
     "notFound": "Nie znaleziono zdjęcia",
     "deleteError": "Błąd podczas usuwania zdjęcia",
     "alt": "Zdjęcie - {{id}}"
+  },
+  "color": {
+    "czerwony": "Czerwony",
+    "zielony": "Zielony",
+    "niebieski": "Niebieski",
+    "czarny": "Czarny",
+    "biały": "Biały",
+    "szary": "Szary",
+    "żółty": "Żółty",
+    "beżowy": "Beżowy",
+    "brązowy": "Brązowy"
+  },
+  "type": {
+    "figurka": "Figurka",
+    "obraz": "Obraz",
+    "magnes": "Magnes"
+  },
+  "material": {
+    "drewno": "Drewno",
+    "metal": "Metal",
+    "szkło": "Szkło",
+    "plastik": "Plastik",
+    "kamień": "Kamień",
+    "tkanina": "Tkanina"
   }
 }

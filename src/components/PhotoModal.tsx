@@ -3,6 +3,7 @@ import './PhotoModal.css';
 import { Photo } from '../types';
 import { isLoggedIn } from '../utils/auth';
 import { useTranslation } from 'react-i18next';
+import { translateOrFallback } from '../utils/translateOrFallback'; // ✅ dodany import
 
 interface Props {
     photo: Photo;
@@ -57,9 +58,9 @@ function PhotoModal({ photo, onClose, onDelete, onEdit, isEditing = false, onPre
 
                 <div className="photo-details">
                     <p><strong>{t('photo.id')}:</strong> {photo.id}</p>
-                    <p><strong>{t('photo.type')}:</strong> {photo.type}</p>
-                    <p><strong>{t('photo.color')}:</strong> {photo.color}</p>
-                    <p><strong>{t('photo.material')}:</strong> {photo.material}</p>
+                    <p><strong>{t('photo.type')}:</strong> {translateOrFallback('type', photo.type)}</p>
+                    <p><strong>{t('photo.color')}:</strong> {translateOrFallback('color', photo.color)}</p>
+                    <p><strong>{t('photo.material')}:</strong> {translateOrFallback('material', photo.material)}</p>
                     <p><strong>{t('photo.height')}:</strong> {photo.height} cm</p>
                     <p><strong>{t('photo.added')}:</strong> {new Date(photo.createdAt).toLocaleDateString('pl-PL')}</p>
                 </div>

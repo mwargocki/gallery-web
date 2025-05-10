@@ -8,8 +8,9 @@ import {
     Camera
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { usePluralizedPhoto } from '../utils/usePluralizedPhoto';
 import { useTranslation } from 'react-i18next';
+import { usePluralizedPhoto } from '../utils/usePluralizedPhoto';
+import { translateOrFallback } from '../utils/translateOrFallback';
 
 export interface Filters {
     color?: string;
@@ -68,7 +69,11 @@ function Sidebar({ filters, onChange, totalElements }: FilterProps) {
                 <Palette size={20} />
                 <select value={filters.color || ''} onChange={(e) => handleChange('color', e.target.value)}>
                     <option value="">{t('sidebar.color')}</option>
-                    {colors.map(color => <option key={color}>{color}</option>)}
+                    {colors.map(color => (
+                        <option key={color} value={color}>
+                            {translateOrFallback('color', color)}
+                        </option>
+                    ))}
                 </select>
             </div>
 
@@ -76,7 +81,11 @@ function Sidebar({ filters, onChange, totalElements }: FilterProps) {
                 <Hammer size={20} />
                 <select value={filters.material || ''} onChange={(e) => handleChange('material', e.target.value)}>
                     <option value="">{t('sidebar.material')}</option>
-                    {materials.map(m => <option key={m}>{m}</option>)}
+                    {materials.map(material => (
+                        <option key={material} value={material}>
+                            {translateOrFallback('material', material)}
+                        </option>
+                    ))}
                 </select>
             </div>
 
@@ -84,7 +93,11 @@ function Sidebar({ filters, onChange, totalElements }: FilterProps) {
                 <Layers size={20} />
                 <select value={filters.type || ''} onChange={(e) => handleChange('type', e.target.value)}>
                     <option value="">{t('sidebar.type')}</option>
-                    {types.map(type => <option key={type}>{type}</option>)}
+                    {types.map(type => (
+                        <option key={type} value={type}>
+                            {translateOrFallback('type', type)}
+                        </option>
+                    ))}
                 </select>
             </div>
 

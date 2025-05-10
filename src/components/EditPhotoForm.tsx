@@ -19,6 +19,24 @@ function EditPhotoForm({ photo, onClose, onSave }: Props) {
     const [height, setHeight] = useState(photo.height);
     const [error, setError] = useState<string | null>(null);
 
+    const [colorOptions, setColorOptions] = useState<string[]>([]);
+    const [typeOptions, setTypeOptions] = useState<string[]>([]);
+    const [materialOptions, setMaterialOptions] = useState<string[]>([]);
+
+    useEffect(() => {
+        fetch(`${process.env.REACT_APP_API_URL}/api/filters/colors`)
+            .then(res => res.json())
+            .then(setColorOptions);
+
+        fetch(`${process.env.REACT_APP_API_URL}/api/filters/types`)
+            .then(res => res.json())
+            .then(setTypeOptions);
+
+        fetch(`${process.env.REACT_APP_API_URL}/api/filters/materials`)
+            .then(res => res.json())
+            .then(setMaterialOptions);
+    }, []);
+
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
             if (e.key === 'Escape') {
@@ -60,28 +78,46 @@ function EditPhotoForm({ photo, onClose, onSave }: Props) {
                 {error && <p className="error">{error}</p>}
 
                 <input
-                    type="text"
+                    list="colors"
                     placeholder={t('editPhoto.color')}
                     value={color}
-                    onChange={e => setColor(e.target.value)}
+                    onChange={(e) => setColor(e.target.value)}
                 />
+                <datalist id="colors">
+                    {colorOptions.map(option => (
+                        <option key={option} value={option} />
+                    ))}
+                </datalist>
+
                 <input
-                    type="text"
+                    list="materials"
                     placeholder={t('editPhoto.material')}
                     value={material}
-                    onChange={e => setMaterial(e.target.value)}
+                    onChange={(e) => setMaterial(e.target.value)}
                 />
+                <datalist id="materials">
+                    {materialOptions.map(option => (
+                        <option key={option} value={option} />
+                    ))}
+                </datalist>
+
                 <input
-                    type="text"
+                    list="types"
                     placeholder={t('editPhoto.type')}
                     value={type}
-                    onChange={e => setType(e.target.value)}
+                    onChange={(e) => setType(e.target.value)}
                 />
+                <datalist id="types">
+                    {typeOptions.map(option => (
+                        <option key={option} value={option} />
+                    ))}
+                </datalist>
+
                 <input
                     type="number"
                     placeholder={t('editPhoto.height')}
                     value={height}
-                    onChange={e => setHeight(parseInt(e.target.value))}
+                    onChange={(e) => setHeight(parseInt(e.target.value))}
                 />
 
                 <div className="edit-photo-form-buttons">
