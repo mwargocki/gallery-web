@@ -95,12 +95,14 @@
     "szary": "Szary",
     "żółty": "Żółty",
     "beżowy": "Beżowy",
-    "brązowy": "Brązowy"
+    "brązowy": "Brązowy",
+    "pomarańczowy": "Pomarańczowy"
   },
   "type": {
     "figurka": "Figurka",
     "obraz": "Obraz",
-    "magnes": "Magnes"
+    "magnes": "Magnes",
+    "człowiek": "Human"
   },
   "material": {
     "drewno": "Drewno",
@@ -108,6 +110,7 @@
     "szkło": "Szkło",
     "plastik": "Plastik",
     "kamień": "Kamień",
-    "tkanina": "Tkanina"
+    "tkanina": "Tkanina",
+    "mięso": "Mięso"
   }
 }

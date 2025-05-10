@@ -95,12 +95,14 @@
     "szary": "Gray",
     "żółty": "Yellow",
     "beżowy": "Beige",
-    "brązowy": "Brown"
+    "brązowy": "Brown",
+    "pomarańczowy": "Pomarańczowy"
   },
   "type": {
     "figurka": "Figurine",
     "obraz": "Painting",
-    "magnes": "Magnet"
+    "magnes": "Magnet",
+    "człowiek": "Human"
   },
   "material": {
     "drewno": "Wood",
@@ -108,6 +110,7 @@
     "szkło": "Glass",
     "plastik": "Plastic",
     "kamień": "Stone",
-    "tkanina": "Fabric"
+    "tkanina": "Fabric",
+    "mięso": "Meat"
   }
 }
