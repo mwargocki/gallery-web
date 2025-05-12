@@ -10,7 +10,7 @@
     "@types/jest": "^27.5.2",
     "@types/node": "^16.18.126",
     "@types/react": "^19.1.2",
-    "@types/react-dom": "^19.1.2",
+    "@types/react-dom": "^19.1.4",
     "i18next": "^25.1.2",
     "i18next-browser-languagedetector": "^8.1.0",
     "lucide-react": "^0.501.0",
