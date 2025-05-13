@@ -2,15 +2,32 @@ import './App.css';
 import Header from './components/Header';
 import Sidebar, { Filters } from './components/Sidebar';
 import Gallery from './components/Gallery';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { isLoggedIn, clearToken } from './utils/auth';
 import LoginForm from './components/LoginForm';
 import UploadForm from './components/UploadForm';
 import AddUserForm from './components/AddUserForm';
 import BackToTopButton from './components/BackToTopButton';
 import { Routes, Route, useLocation, Navigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 function App() {
+    const { t, i18n } = useTranslation();
+
+    // Dynamiczny tytuł strony
+    useEffect(() => {
+        const updateTitle = () => {
+            document.title = t('meta.title');
+        };
+
+        updateTitle(); // Ustaw tytuł przy starcie
+        i18n.on('languageChanged', updateTitle); // Ustaw tytuł przy zmianie języka
+
+        return () => {
+            i18n.off('languageChanged', updateTitle);
+        };
+    }, [t, i18n]);
+
     const [authenticated, setAuthenticated] = useState<boolean>(isLoggedIn());
     const [showLogin, setShowLogin] = useState<boolean>(false);
     const [showUpload, setShowUpload] = useState<boolean>(false);

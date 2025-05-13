@@ -1,6 +1,10 @@
 {
+  "meta": {
+    "title": "Angel's Violin"
+  },
   "header": {
-    "title": "Photo gallery",
+    "title": "Angel's Violin",
+    "subtitle": "Private collection of violin playing angels",
     "upload_photo": "Upload Photo",
     "new_user": "New User",
     "logout": "Logout",

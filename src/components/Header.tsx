@@ -3,6 +3,7 @@ import { LogIn, LogOut, Plus, UserPlus } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import plFlag from '../assets/pl.png';
 import gbFlag from '../assets/gb.png';
+import { ReactComponent as Logo } from '../assets/logo.svg';
 
 interface Props {
     authenticated: boolean;
@@ -21,7 +22,14 @@ function Header({ authenticated, onLogout, onShowLogin, onShowUpload, onShowAddU
 
     return (
         <header className="header">
-            <h1>{t('header.title')}</h1>
+            <div className="header-branding">
+                <Logo className="header-logo" />
+                <div className="header-titles">
+                    <div className="site-title">{t('header.title')}</div>
+                    <div className="site-subtitle">{t('header.subtitle')}</div>
+                </div>
+            </div>
+
             <div className="header-buttons">
                 <div className="language-switcher">
                     <img

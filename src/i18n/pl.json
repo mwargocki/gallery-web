@@ -1,6 +1,10 @@
 {
+  "meta": {
+    "title": "Anielskie Skrzypce"
+  },
   "header": {
-    "title": "Galeria zdjęć",
+    "title": "Anielskie Skrzypce",
+    "subtitle": "Prywatna kolekcja aniołów grających na skrzypcach",
     "upload_photo": "Dodaj zdjęcie",
     "new_user": "Nowy użytkownik",
     "logout": "Wyloguj",
