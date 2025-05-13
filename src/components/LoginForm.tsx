@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import './LoginForm.css';
 import { saveToken } from '../utils/auth';
 import { useTranslation } from 'react-i18next';
@@ -14,6 +14,8 @@ function LoginForm({ onLoginSuccess, onClose }: Props) {
     const [password, setPassword] = useState('');
     const [error, setError] = useState<string | null>(null);
 
+    const backdropRef = useRef<HTMLDivElement>(null);
+
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
             if (e.key === 'Escape') onClose();
@@ -21,6 +23,12 @@ function LoginForm({ onLoginSuccess, onClose }: Props) {
         document.addEventListener('keydown', handleKeyDown);
         return () => document.removeEventListener('keydown', handleKeyDown);
     }, [onClose]);
+
+    const handleMouseDown = (e: React.MouseEvent) => {
+        if (e.target === backdropRef.current) {
+            onClose();
+        }
+    };
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -41,7 +49,11 @@ function LoginForm({ onLoginSuccess, onClose }: Props) {
     };
 
     return (
-        <div className="login-modal-backdrop" onClick={onClose}>
+        <div
+            className="login-modal-backdrop"
+            ref={backdropRef}
+            onMouseDown={handleMouseDown}
+        >
             <div className="login-modal" onClick={e => e.stopPropagation()}>
                 <h2>{t('login.title')}</h2>
                 {error && <p className="error">{error}</p>}
@@ -53,7 +65,12 @@ function LoginForm({ onLoginSuccess, onClose }: Props) {
                         onChange={e => setUsername(e.target.value)}
                         autoFocus
                     />
-                    <input type="password" placeholder={t('login.password')} value={password} onChange={e => setPassword(e.target.value)} />
+                    <input
+                        type="password"
+                        placeholder={t('login.password')}
+                        value={password}
+                        onChange={e => setPassword(e.target.value)}
+                    />
                     <button type="submit">{t('login.submit')}</button>
                 </form>
             </div>

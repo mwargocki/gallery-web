@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Photo } from '../types';
 import { getToken } from '../utils/auth';
 import './EditPhotoForm.css';
@@ -24,6 +24,8 @@ function EditPhotoForm({ photo, onClose, onSave }: Props) {
     const [typeOptions, setTypeOptions] = useState<string[]>([]);
     const [materialOptions, setMaterialOptions] = useState<string[]>([]);
 
+    const backdropRef = useRef<HTMLDivElement>(null);
+
     useEffect(() => {
         fetch(`${process.env.REACT_APP_API_URL}/api/filters/colors`).then(res => res.json()).then(setColorOptions);
         fetch(`${process.env.REACT_APP_API_URL}/api/filters/types`).then(res => res.json()).then(setTypeOptions);
@@ -40,6 +42,12 @@ function EditPhotoForm({ photo, onClose, onSave }: Props) {
         window.addEventListener('keydown', handleKeyDown);
         return () => window.removeEventListener('keydown', handleKeyDown);
     }, [onClose]);
+
+    const handleMouseDown = (e: React.MouseEvent) => {
+        if (e.target === backdropRef.current) {
+            onClose();
+        }
+    };
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -65,7 +73,11 @@ function EditPhotoForm({ photo, onClose, onSave }: Props) {
     };
 
     return (
-        <div className="edit-modal-backdrop" onClick={onClose}>
+        <div
+            className="edit-modal-backdrop"
+            ref={backdropRef}
+            onMouseDown={handleMouseDown}
+        >
             <form className="edit-modal edit-photo-form-inner" onClick={e => e.stopPropagation()} onSubmit={handleSubmit}>
                 <h2>{t('editPhoto.title')}</h2>
                 {error && <p className="error">{error}</p>}

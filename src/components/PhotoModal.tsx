@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import './PhotoModal.css';
 import { Photo } from '../types';
 import { isLoggedIn } from '../utils/auth';
@@ -18,6 +18,7 @@ interface Props {
 
 function PhotoModal({ photo, onClose, onDelete, onEdit, isEditing = false, onPrev, onNext }: Props) {
     const { t } = useTranslation();
+    const backdropRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
@@ -36,8 +37,18 @@ function PhotoModal({ photo, onClose, onDelete, onEdit, isEditing = false, onPre
         return () => window.removeEventListener('keydown', handleKeyDown);
     }, [onClose, onPrev, onNext, isEditing]);
 
+    const handleMouseDown = (e: React.MouseEvent) => {
+        if (e.target === backdropRef.current) {
+            onClose();
+        }
+    };
+
     return (
-        <div className="photo-modal-backdrop" onClick={onClose}>
+        <div
+            className="photo-modal-backdrop"
+            ref={backdropRef}
+            onMouseDown={handleMouseDown}
+        >
             <div className="photo-modal" onClick={e => e.stopPropagation()}>
                 {onPrev && (
                     <button className="nav-arrow left" onClick={onPrev}>
