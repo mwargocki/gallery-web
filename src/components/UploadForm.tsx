@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import './UploadForm.css';
 import { getToken } from '../utils/auth';
 import { useTranslation } from 'react-i18next';
+import { Palette, Hammer, Layers, Ruler, Camera } from 'lucide-react';
 
 interface Props {
     onUploadSuccess: () => void;
@@ -23,17 +24,9 @@ function UploadForm({ onUploadSuccess, onClose }: Props) {
     const [materialOptions, setMaterialOptions] = useState<string[]>([]);
 
     useEffect(() => {
-        fetch(`${process.env.REACT_APP_API_URL}/api/filters/colors`)
-            .then(res => res.json())
-            .then(setColorOptions);
-
-        fetch(`${process.env.REACT_APP_API_URL}/api/filters/types`)
-            .then(res => res.json())
-            .then(setTypeOptions);
-
-        fetch(`${process.env.REACT_APP_API_URL}/api/filters/materials`)
-            .then(res => res.json())
-            .then(setMaterialOptions);
+        fetch(`${process.env.REACT_APP_API_URL}/api/filters/colors`).then(res => res.json()).then(setColorOptions);
+        fetch(`${process.env.REACT_APP_API_URL}/api/filters/types`).then(res => res.json()).then(setTypeOptions);
+        fetch(`${process.env.REACT_APP_API_URL}/api/filters/materials`).then(res => res.json()).then(setMaterialOptions);
     }, []);
 
     useEffect(() => {
@@ -62,21 +55,14 @@ function UploadForm({ onUploadSuccess, onClose }: Props) {
         formData.append(
             'photo',
             new Blob(
-                [JSON.stringify({
-                    color,
-                    material,
-                    type,
-                    height: parseInt(height, 10)
-                })],
+                [JSON.stringify({ color, material, type, height: parseInt(height, 10) })],
                 { type: 'application/json' }
             )
         );
 
         fetch(`${process.env.REACT_APP_API_URL}/api/photos`, {
             method: 'POST',
-            headers: {
-                Authorization: `Bearer ${getToken()!}`
-            },
+            headers: { Authorization: `Bearer ${getToken()!}` },
             body: formData,
             credentials: 'include'
         })
@@ -97,60 +83,69 @@ function UploadForm({ onUploadSuccess, onClose }: Props) {
                 <h2>{t('upload.title')}</h2>
                 {error && <p className="error">{error}</p>}
 
-                <input
-                    type="file"
-                    accept="image/*"
-                    onChange={e => setFile(e.target.files?.[0] || null)}
-                />
+                <div className="upload-form-item tight">
+                    <Camera size={20} />
+                    <input
+                        type="file"
+                        accept="image/*"
+                        onChange={e => setFile(e.target.files?.[0] || null)}
+                    />
+                </div>
 
-                <input
-                    list="colors"
-                    placeholder={t('upload.color')}
-                    value={color}
-                    onChange={e => setColor(e.target.value)}
-                />
+                <div className="upload-form-item tight">
+                    <Palette size={20} />
+                    <input
+                        list="colors"
+                        placeholder={t('upload.color')}
+                        value={color}
+                        onChange={e => setColor(e.target.value)}
+                    />
+                </div>
                 <datalist id="colors">
-                    {colorOptions.map((option) => (
-                        <option key={option} value={option} />
-                    ))}
+                    {colorOptions.map(option => <option key={option} value={option} />)}
                 </datalist>
 
-                <input
-                    list="materials"
-                    placeholder={t('upload.material')}
-                    value={material}
-                    onChange={e => setMaterial(e.target.value)}
-                />
+                <div className="upload-form-item tight">
+                    <Hammer size={20} />
+                    <input
+                        list="materials"
+                        placeholder={t('upload.material')}
+                        value={material}
+                        onChange={e => setMaterial(e.target.value)}
+                    />
+                </div>
                 <datalist id="materials">
-                    {materialOptions.map((option) => (
-                        <option key={option} value={option} />
-                    ))}
+                    {materialOptions.map(option => <option key={option} value={option} />)}
                 </datalist>
 
-                <input
-                    list="types"
-                    placeholder={t('upload.type')}
-                    value={type}
-                    onChange={e => setType(e.target.value)}
-                />
+                <div className="upload-form-item tight">
+                    <Layers size={20} />
+                    <input
+                        list="types"
+                        placeholder={t('upload.type')}
+                        value={type}
+                        onChange={e => setType(e.target.value)}
+                    />
+                </div>
                 <datalist id="types">
-                    {typeOptions.map((option) => (
-                        <option key={option} value={option} />
-                    ))}
+                    {typeOptions.map(option => <option key={option} value={option} />)}
                 </datalist>
 
-                <input
-                    type="number"
-                    inputMode="numeric"
-                    placeholder={t('upload.height')}
-                    value={height}
-                    onChange={(e) => {
-                        const value = e.target.value;
-                        if (/^\d*$/.test(value)) {
-                            setHeight(value);
-                        }
-                    }}
-                />
+                <div className="upload-form-item tight">
+                    <Ruler size={20} />
+                    <input
+                        type="number"
+                        inputMode="numeric"
+                        placeholder={t('upload.height')}
+                        value={height}
+                        onChange={e => {
+                            const value = e.target.value;
+                            if (/^\d*$/.test(value)) {
+                                setHeight(value);
+                            }
+                        }}
+                    />
+                </div>
 
                 <div className="upload-form-buttons">
                     <button type="submit">{t('upload.submit')}</button>
