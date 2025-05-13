@@ -64,13 +64,14 @@ function Gallery({ filters, setTotalElements }: GalleryProps) {
                 setLoading(false);
                 isFetchingRef.current = false;
             });
-    }, [filters, setTotalElements]);
+    }, [filters.color, filters.material, filters.maxHeight, filters.minHeight, filters.type, setTotalElements, t]);
 
     useEffect(() => {
         setPhotos([]);
         setPage(0);
         setHasMore(true);
         fetchPhotos(0, true);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [JSON.stringify(filters), fetchPhotos]);
 
     useEffect(() => {
@@ -102,7 +103,7 @@ function Gallery({ filters, setTotalElements }: GalleryProps) {
                     navigate('/photos');
                 });
         }
-    }, [photoId, navigate]);
+    }, [photoId, navigate, t]);
 
     const handleDelete = (photoId: number) => {
         fetch(`${process.env.REACT_APP_API_URL}/api/photos/${photoId}`, {

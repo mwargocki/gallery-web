@@ -19,7 +19,7 @@ function AddUserForm({ onClose }: Props) {
         };
         document.addEventListener('keydown', handleKeyDown);
         return () => document.removeEventListener('keydown', handleKeyDown);
-    }, []);
+    }, [onClose]);
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
