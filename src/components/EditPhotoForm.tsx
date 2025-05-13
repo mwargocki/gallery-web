@@ -3,6 +3,7 @@ import { Photo } from '../types';
 import { getToken } from '../utils/auth';
 import './EditPhotoForm.css';
 import { useTranslation } from 'react-i18next';
+import { Palette, Hammer, Layers, Ruler } from 'lucide-react';
 
 interface Props {
     photo: Photo;
@@ -24,17 +25,9 @@ function EditPhotoForm({ photo, onClose, onSave }: Props) {
     const [materialOptions, setMaterialOptions] = useState<string[]>([]);
 
     useEffect(() => {
-        fetch(`${process.env.REACT_APP_API_URL}/api/filters/colors`)
-            .then(res => res.json())
-            .then(setColorOptions);
-
-        fetch(`${process.env.REACT_APP_API_URL}/api/filters/types`)
-            .then(res => res.json())
-            .then(setTypeOptions);
-
-        fetch(`${process.env.REACT_APP_API_URL}/api/filters/materials`)
-            .then(res => res.json())
-            .then(setMaterialOptions);
+        fetch(`${process.env.REACT_APP_API_URL}/api/filters/colors`).then(res => res.json()).then(setColorOptions);
+        fetch(`${process.env.REACT_APP_API_URL}/api/filters/types`).then(res => res.json()).then(setTypeOptions);
+        fetch(`${process.env.REACT_APP_API_URL}/api/filters/materials`).then(res => res.json()).then(setMaterialOptions);
     }, []);
 
     useEffect(() => {
@@ -77,48 +70,60 @@ function EditPhotoForm({ photo, onClose, onSave }: Props) {
                 <h2>{t('editPhoto.title')}</h2>
                 {error && <p className="error">{error}</p>}
 
-                <input
-                    list="colors"
-                    placeholder={t('editPhoto.color')}
-                    value={color}
-                    onChange={(e) => setColor(e.target.value)}
-                />
+                <div className="edit-form-item tight">
+                    <Palette size={20} />
+                    <input
+                        list="colors"
+                        placeholder={t('editPhoto.color')}
+                        value={color}
+                        onChange={(e) => setColor(e.target.value)}
+                    />
+                </div>
                 <datalist id="colors">
                     {colorOptions.map(option => (
                         <option key={option} value={option} />
                     ))}
                 </datalist>
 
-                <input
-                    list="materials"
-                    placeholder={t('editPhoto.material')}
-                    value={material}
-                    onChange={(e) => setMaterial(e.target.value)}
-                />
+                <div className="edit-form-item tight">
+                    <Hammer size={20} />
+                    <input
+                        list="materials"
+                        placeholder={t('editPhoto.material')}
+                        value={material}
+                        onChange={(e) => setMaterial(e.target.value)}
+                    />
+                </div>
                 <datalist id="materials">
                     {materialOptions.map(option => (
                         <option key={option} value={option} />
                     ))}
                 </datalist>
 
-                <input
-                    list="types"
-                    placeholder={t('editPhoto.type')}
-                    value={type}
-                    onChange={(e) => setType(e.target.value)}
-                />
+                <div className="edit-form-item tight">
+                    <Layers size={20} />
+                    <input
+                        list="types"
+                        placeholder={t('editPhoto.type')}
+                        value={type}
+                        onChange={(e) => setType(e.target.value)}
+                    />
+                </div>
                 <datalist id="types">
                     {typeOptions.map(option => (
                         <option key={option} value={option} />
                     ))}
                 </datalist>
 
-                <input
-                    type="number"
-                    placeholder={t('editPhoto.height')}
-                    value={height}
-                    onChange={(e) => setHeight(parseInt(e.target.value))}
-                />
+                <div className="edit-form-item tight">
+                    <Ruler size={20} />
+                    <input
+                        type="number"
+                        placeholder={t('editPhoto.height')}
+                        value={height}
+                        onChange={(e) => setHeight(parseInt(e.target.value))}
+                    />
+                </div>
 
                 <div className="edit-photo-form-buttons">
                     <button type="submit">{t('editPhoto.save')}</button>

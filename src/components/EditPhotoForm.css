@@ -100,3 +100,21 @@
     min-width: 100px;
     max-width: 150px;
 }
+
+/* Ikona + input */
+.edit-form-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    width: 100%;
+}
+
+.edit-form-item input {
+    flex: 1;
+    padding: 0.5rem;
+    font-size: 1rem;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    width: 100%;
+    box-sizing: border-box;
+}
