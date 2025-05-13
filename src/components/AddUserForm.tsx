@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import './AddUserForm.css';
 import { getToken } from '../utils/auth';
 import { useTranslation } from 'react-i18next';
@@ -13,6 +13,8 @@ function AddUserForm({ onClose }: Props) {
     const [password, setPassword] = useState('');
     const [error, setError] = useState<string | null>(null);
 
+    const backdropRef = useRef<HTMLDivElement>(null);
+
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
             if (e.key === 'Escape') onClose();
@@ -20,6 +22,12 @@ function AddUserForm({ onClose }: Props) {
         document.addEventListener('keydown', handleKeyDown);
         return () => document.removeEventListener('keydown', handleKeyDown);
     }, [onClose]);
+
+    const handleMouseDown = (e: React.MouseEvent) => {
+        if (e.target === backdropRef.current) {
+            onClose();
+        }
+    };
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -44,7 +52,11 @@ function AddUserForm({ onClose }: Props) {
     };
 
     return (
-        <div className="add-user-modal-backdrop" onClick={onClose}>
+        <div
+            className="add-user-modal-backdrop"
+            ref={backdropRef}
+            onMouseDown={handleMouseDown}
+        >
             <form className="add-user-modal add-user-form-inner" onClick={e => e.stopPropagation()} onSubmit={handleSubmit}>
                 <h2>{t('addUser.title')}</h2>
                 {error && <p className="error">{error}</p>}

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import './UploadForm.css';
 import { getToken } from '../utils/auth';
 import { useTranslation } from 'react-i18next';
@@ -22,6 +22,8 @@ function UploadForm({ onUploadSuccess, onClose }: Props) {
     const [colorOptions, setColorOptions] = useState<string[]>([]);
     const [typeOptions, setTypeOptions] = useState<string[]>([]);
     const [materialOptions, setMaterialOptions] = useState<string[]>([]);
+
+    const backdropRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         fetch(`${process.env.REACT_APP_API_URL}/api/filters/colors`).then(res => res.json()).then(setColorOptions);
@@ -77,8 +79,18 @@ function UploadForm({ onUploadSuccess, onClose }: Props) {
             .catch(err => setError(err.message));
     };
 
+    const handleMouseDown = (e: React.MouseEvent) => {
+        if (e.target === backdropRef.current) {
+            onClose();
+        }
+    };
+
     return (
-        <div className="upload-modal-backdrop" onClick={onClose}>
+        <div
+            className="upload-modal-backdrop"
+            ref={backdropRef}
+            onMouseDown={handleMouseDown}
+        >
             <form className="upload-modal upload-form-inner" onClick={(e) => e.stopPropagation()} onSubmit={handleSubmit}>
                 <h2>{t('upload.title')}</h2>
                 {error && <p className="error">{error}</p>}
@@ -102,7 +114,7 @@ function UploadForm({ onUploadSuccess, onClose }: Props) {
                     />
                 </div>
                 <datalist id="colors">
-                    {colorOptions.map(option => <option key={option} value={option} />)}
+                    {colorOptions.map((option) => <option key={option} value={option} />)}
                 </datalist>
 
                 <div className="upload-form-item tight">
@@ -115,7 +127,7 @@ function UploadForm({ onUploadSuccess, onClose }: Props) {
                     />
                 </div>
                 <datalist id="materials">
-                    {materialOptions.map(option => <option key={option} value={option} />)}
+                    {materialOptions.map((option) => <option key={option} value={option} />)}
                 </datalist>
 
                 <div className="upload-form-item tight">
@@ -128,7 +140,7 @@ function UploadForm({ onUploadSuccess, onClose }: Props) {
                     />
                 </div>
                 <datalist id="types">
-                    {typeOptions.map(option => <option key={option} value={option} />)}
+                    {typeOptions.map((option) => <option key={option} value={option} />)}
                 </datalist>
 
                 <div className="upload-form-item tight">
@@ -138,9 +150,9 @@ function UploadForm({ onUploadSuccess, onClose }: Props) {
                         inputMode="numeric"
                         placeholder={t('upload.height')}
                         value={height}
-                        onChange={e => {
+                        onChange={(e) => {
                             const value = e.target.value;
-                            if (/^\d*$/.test(value)) {
+                            if (/^\\d*$/.test(value)) {
                                 setHeight(value);
                             }
                         }}
