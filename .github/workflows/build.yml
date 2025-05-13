@@ -11,9 +11,6 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref_name }}
   cancel-in-progress: false
 
-env:
-  TARGET_DIR: "projects/gha-test"
-
 jobs:
   build:
     name: 🛠️ Build gallery-web
@@ -81,35 +78,11 @@ jobs:
         sshpass -p "${{ secrets.PASSWORD }}" \
         scp -o StrictHostKeyChecking=no \
         dist/${{ needs.build.outputs.artifact-name }}.zip \
-        ${{ secrets.USERNAME }}@${{ secrets.HOST }}:~/${{ env.TARGET_DIR }}/frontend.zip
+        ${{ secrets.USERNAME }}@${{ secrets.HOST }}:~/${{ vars.TARGET_DIR }}/frontend.zip
 
     - name: 📦 Unzip on server
       run: |
         sshpass -p "${{ secrets.PASSWORD }}" \
         ssh -o StrictHostKeyChecking=no \
         ${{ secrets.USERNAME }}@${{ secrets.HOST }} \
-        "cd ~/${{ env.TARGET_DIR }} && unzip -q frontend.zip && rm frontend.zip"
-
-#      - name: 🧰 Install sshpass
-#        run: sudo apt-get update && sudo apt-get install -y sshpass
-#
-#      - name: 🚀 Run pre-deploy script
-#        run: |
-#          sshpass -p "${{ secrets.PASSWORD }}" \
-#          ssh -o StrictHostKeyChecking=no \
-#          ${{ secrets.USERNAME }}@${{ secrets.HOST }} \
-#          "bash ~/${TARGET_DIR}/api-stop.sh"
-#
-#      - name: 📤 Upload as gallery-api.jar
-#        run: |
-#          sshpass -p "${{ secrets.PASSWORD }}" \
-#          scp -o StrictHostKeyChecking=no \
-#          dist/gallery-api-${{ github.sha }}.jar \
-#          ${{ secrets.USERNAME }}@${{ secrets.HOST }}:${TARGET_DIR}/backend/gallery-api.jar
-#
-#      - name: 🚀 Run post-deploy script
-#        run: |
-#          sshpass -p "${{ secrets.PASSWORD }}" \
-#          ssh -o StrictHostKeyChecking=no \
-#          ${{ secrets.USERNAME }}@${{ secrets.HOST }} \
-#          "bash ~/${TARGET_DIR}/api-start.sh"
+        "cd ~/${{ vars.TARGET_DIR }} && unzip -q frontend.zip && rm frontend.zip"
