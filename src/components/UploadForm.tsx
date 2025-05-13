@@ -13,6 +13,7 @@ function UploadForm({ onUploadSuccess, onClose }: Props) {
     const { t } = useTranslation();
 
     const [file, setFile] = useState<File | null>(null);
+    const [previewUrl, setPreviewUrl] = useState<string | null>(null);
     const [color, setColor] = useState('');
     const [material, setMaterial] = useState('');
     const [type, setType] = useState('');
@@ -93,6 +94,13 @@ function UploadForm({ onUploadSuccess, onClose }: Props) {
         >
             <form className="upload-modal upload-form-inner" onClick={(e) => e.stopPropagation()} onSubmit={handleSubmit}>
                 <h2>{t('upload.title')}</h2>
+
+                {previewUrl && (
+                    <div className="image-preview">
+                        <img src={previewUrl} alt="Preview" />
+                    </div>
+                )}
+
                 {error && <p className="error">{error}</p>}
 
                 <div className="upload-form-item tight">
@@ -100,7 +108,11 @@ function UploadForm({ onUploadSuccess, onClose }: Props) {
                     <input
                         type="file"
                         accept="image/*"
-                        onChange={e => setFile(e.target.files?.[0] || null)}
+                        onChange={e => {
+                            const file = e.target.files?.[0] || null;
+                            setFile(file);
+                            setPreviewUrl(file ? URL.createObjectURL(file) : null);
+                        }}
                     />
                 </div>
 
@@ -114,7 +126,7 @@ function UploadForm({ onUploadSuccess, onClose }: Props) {
                     />
                 </div>
                 <datalist id="colors">
-                    {colorOptions.map((option) => <option key={option} value={option} />)}
+                    {colorOptions.map(option => <option key={option} value={option} />)}
                 </datalist>
 
                 <div className="upload-form-item tight">
@@ -127,7 +139,7 @@ function UploadForm({ onUploadSuccess, onClose }: Props) {
                     />
                 </div>
                 <datalist id="materials">
-                    {materialOptions.map((option) => <option key={option} value={option} />)}
+                    {materialOptions.map(option => <option key={option} value={option} />)}
                 </datalist>
 
                 <div className="upload-form-item tight">
@@ -140,7 +152,7 @@ function UploadForm({ onUploadSuccess, onClose }: Props) {
                     />
                 </div>
                 <datalist id="types">
-                    {typeOptions.map((option) => <option key={option} value={option} />)}
+                    {typeOptions.map(option => <option key={option} value={option} />)}
                 </datalist>
 
                 <div className="upload-form-item tight">
@@ -152,7 +164,7 @@ function UploadForm({ onUploadSuccess, onClose }: Props) {
                         value={height}
                         onChange={(e) => {
                             const value = e.target.value;
-                            if (/^\\d*$/.test(value)) {
+                            if (/^\d*$/.test(value)) {
                                 setHeight(value);
                             }
                         }}
