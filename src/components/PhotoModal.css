@@ -113,3 +113,10 @@
 .nav-arrow.right {
     right: 10px;
 }
+
+.photo-details p {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin: 0.4rem 0;
+}
