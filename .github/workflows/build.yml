@@ -76,6 +76,14 @@ jobs:
         ${{ secrets.USERNAME }}@${{ secrets.HOST }} \
         "rm -rf ~/${{ vars.TARGET_DIR }}/*"
 
+    - name: 📤 Upload zip to server
+      run: |
+        sshpass -p "${{ secrets.PASSWORD }}" \
+        scp -o StrictHostKeyChecking=no \
+        dist/${{ needs.build.outputs.artifact-name }}.zip \
+        ${{ secrets.USERNAME }}@${{ secrets.HOST }}:~/${{ env.TARGET_DIR }}/frontend.zip
+
+
 #      - name: 🧰 Install sshpass
 #        run: sudo apt-get update && sudo apt-get install -y sshpass
 #
