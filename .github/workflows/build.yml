@@ -83,6 +83,12 @@ jobs:
         dist/${{ needs.build.outputs.artifact-name }}.zip \
         ${{ secrets.USERNAME }}@${{ secrets.HOST }}:~/${{ env.TARGET_DIR }}/frontend.zip
 
+    - name: 📦 Unzip on server
+      run: |
+        sshpass -p "${{ secrets.PASSWORD }}" \
+        ssh -o StrictHostKeyChecking=no \
+        ${{ secrets.USERNAME }}@${{ secrets.HOST }} \
+        "cd ~/${{ env.TARGET_DIR }} && unzip -q frontend.zip && rm frontend.zip"
 
 #      - name: 🧰 Install sshpass
 #        run: sudo apt-get update && sudo apt-get install -y sshpass
