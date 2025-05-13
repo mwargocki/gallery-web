@@ -42,6 +42,9 @@ jobs:
       - name: 📁 Zip build directory
         run: zip -r ${{ steps.set-artifact-name.outputs.name }}.zip build/
 
+      - name: 📁 Zip build contents
+        run: cd build && zip -r ../${{ steps.set-artifact-name.outputs.name }}.zip . && cd ..
+
       - name: 🗃️ Upload artifact
         uses: actions/upload-artifact@v4
         with:
