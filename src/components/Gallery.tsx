@@ -226,11 +226,12 @@ function Gallery({ filters, setTotalElements }: GalleryProps) {
                     photo={photoToEdit}
                     onClose={() => {
                         setPhotoToEdit(null);
-                        if (photoToEdit) {
-                            setSelectedPhoto(photoToEdit);
-                        }
                     }}
-                    onSave={() => fetchPhotos(0, true)}
+                    onSave={() => {
+                        fetch(`${process.env.REACT_APP_API_URL}/api/photos/${photoToEdit.id}`)
+                            .then(res => res.json())
+                            .then(updated => setSelectedPhoto(updated));
+                    }}
                 />
             )}
         </>
