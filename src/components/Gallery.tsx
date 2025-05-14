@@ -68,12 +68,13 @@ function Gallery({ filters, setFilters, setTotalElements, triggerSidebarReload }
             });
     }, [filters, setTotalElements, t]);
 
+    const filtersKey = JSON.stringify(filters);
     useEffect(() => {
         setPhotos([]);
         setPage(0);
         setHasMore(true);
         fetchPhotos(0, true);
-    }, [JSON.stringify(filters), fetchPhotos]);
+    }, [filtersKey, fetchPhotos]);
 
     useEffect(() => {
         if (!hasMore || loading) return;
