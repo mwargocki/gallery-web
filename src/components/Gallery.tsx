@@ -12,10 +12,14 @@ import { useTranslation } from 'react-i18next';
 
 interface GalleryProps {
     filters: Filters;
+    setFilters: (filters: Filters) => void;
     setTotalElements: (value: number) => void;
+    triggerSidebarReload: () => void;
 }
 
-function Gallery({ filters, setTotalElements }: GalleryProps) {
+function Gallery({ filters, setFilters, setTotalElements, triggerSidebarReload }: GalleryProps) {
+    const { t } = useTranslation();
+
     const [photos, setPhotos] = useState<Photo[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -32,8 +36,6 @@ function Gallery({ filters, setTotalElements }: GalleryProps) {
     const location = useLocation();
     const { photoId } = useParams();
     const previousLocationRef = useRef<string | null>(null);
-
-    const { t } = useTranslation();
 
     const fetchPhotos = useCallback((pageToLoad: number, reset = false) => {
         if (isFetchingRef.current) return;
@@ -64,14 +66,13 @@ function Gallery({ filters, setTotalElements }: GalleryProps) {
                 setLoading(false);
                 isFetchingRef.current = false;
             });
-    }, [filters.color, filters.material, filters.maxHeight, filters.minHeight, filters.type, setTotalElements, t]);
+    }, [filters, setTotalElements, t]);
 
     useEffect(() => {
         setPhotos([]);
         setPage(0);
         setHasMore(true);
         fetchPhotos(0, true);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [JSON.stringify(filters), fetchPhotos]);
 
     useEffect(() => {
@@ -118,6 +119,7 @@ function Gallery({ filters, setTotalElements }: GalleryProps) {
                 setPhotos(prev => prev.filter(p => p.id !== photoId));
                 navigate(previousLocationRef.current || '/photos');
                 fetchPhotos(0, true);
+                triggerSidebarReload();
             })
             .catch(err => alert(err.message));
     };
@@ -224,13 +226,14 @@ function Gallery({ filters, setTotalElements }: GalleryProps) {
             {photoToEdit && (
                 <EditPhotoForm
                     photo={photoToEdit}
-                    onClose={() => {
-                        setPhotoToEdit(null);
-                    }}
+                    onClose={() => setPhotoToEdit(null)}
                     onSave={() => {
                         fetch(`${process.env.REACT_APP_API_URL}/api/photos/${photoToEdit.id}`)
                             .then(res => res.json())
-                            .then(updated => setSelectedPhoto(updated));
+                            .then(updated => {
+                                setSelectedPhoto(updated);
+                                triggerSidebarReload();
+                            });
                     }}
                 />
             )}
