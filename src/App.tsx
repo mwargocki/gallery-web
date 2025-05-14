@@ -7,6 +7,7 @@ import { isLoggedIn, clearToken } from './utils/auth';
 import LoginForm from './components/LoginForm';
 import UploadForm from './components/UploadForm';
 import AddUserForm from './components/AddUserForm';
+import Footer from './components/Footer';
 import BackToTopButton from './components/BackToTopButton';
 import { Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -126,6 +127,7 @@ function App() {
             )}
 
             <BackToTopButton />
+            <Footer />
         </div>
     );
 }
