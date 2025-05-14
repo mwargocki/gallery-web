@@ -85,4 +85,4 @@ jobs:
         sshpass -p "${{ secrets.PASSWORD }}" \
         ssh -o StrictHostKeyChecking=no \
         ${{ secrets.USERNAME }}@${{ secrets.HOST }} \
-        "cd ~/${{ vars.TARGET_DIR }} && unzip -q frontend.zip && rm frontend.zip"
+        "cd ~/${{ vars.TARGET_DIR }} && unzip -oq frontend.zip && rm frontend.zip"
