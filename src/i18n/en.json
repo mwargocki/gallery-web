@@ -77,6 +77,13 @@
     "height": "Height",
     "min": "min (cm)",
     "max": "max (cm)",
+    "sort": {
+      "title": "Sort by",
+      "dateDesc": "Date ▼",
+      "dateAsc": "Date ▲",
+      "heightDesc": "Height ▼",
+      "heightAsc": "Height ▲"
+    },
     "reset": "Reset filters"
   },
   "counter": {

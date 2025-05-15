@@ -47,6 +47,7 @@ function Gallery({ filters, setFilters, setTotalElements, triggerSidebarReload }
         if (filters.material) params.append('material', filters.material);
         if (filters.minHeight) params.append('minHeight', String(filters.minHeight));
         if (filters.maxHeight) params.append('maxHeight', String(filters.maxHeight));
+        if (filters.sort) params.append('sort', filters.sort)
         params.append('page', String(pageToLoad));
         params.append('size', '12');
 

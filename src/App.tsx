@@ -44,6 +44,7 @@ function App() {
             material: params.get('material') || undefined,
             minHeight: params.get('minHeight') ? parseInt(params.get('minHeight')!) : undefined,
             maxHeight: params.get('maxHeight') ? parseInt(params.get('maxHeight')!) : undefined,
+            sort: params.get('sort') || 'date_desc',
         };
     });
 

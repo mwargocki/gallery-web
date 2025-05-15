@@ -5,7 +5,8 @@ import {
     Hammer,
     Layers,
     Ruler,
-    Camera
+    Camera,
+    ArrowUpDown
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -18,6 +19,7 @@ export interface Filters {
     material?: string;
     minHeight?: number;
     maxHeight?: number;
+    sort?: string;
 }
 
 interface FilterProps {
@@ -52,6 +54,7 @@ function Sidebar({ filters, onChange, totalElements }: FilterProps) {
         if (updated.material) params.set('material', updated.material);
         if (updated.minHeight) params.set('minHeight', String(updated.minHeight));
         if (updated.maxHeight) params.set('maxHeight', String(updated.maxHeight));
+        if (updated.sort) params.set('sort', updated.sort);
 
         navigate({ search: params.toString() }, { replace: true });
     };
@@ -139,6 +142,20 @@ function Sidebar({ filters, onChange, totalElements }: FilterProps) {
                         }
                     }}
                 />
+            </div>
+
+            <p className="sidebar-section-title">{t('sidebar.sort.title')}</p>
+            <div className="sidebar-item tight">
+                <ArrowUpDown size={20} />
+                <select
+                    value={filters.sort ?? 'date_desc'}
+                    onChange={(e) => handleChange('sort', e.target.value)}
+                >
+                    <option value="date_desc">{t('sidebar.sort.dateDesc')}</option>
+                    <option value="date_asc">{t('sidebar.sort.dateAsc')}</option>
+                    <option value="height_desc">{t('sidebar.sort.heightDesc')}</option>
+                    <option value="height_asc">{t('sidebar.sort.heightAsc')}</option>
+                </select>
             </div>
 
             <button className="reset-button" onClick={resetFilters}>
