@@ -1,7 +1,7 @@
-body, html, #root {
+html, body, #root {
     margin: 0;
     padding: 0;
-    height: 100vh;
+    height: 100%;
     overflow: hidden;
     font-family: 'Poppins', 'Inter', sans-serif;
     background-color: #f3f4f6;
@@ -11,33 +11,35 @@ body, html, #root {
 .app {
     display: flex;
     flex-direction: column;
-    height: 100vh;
+    height: 100%;
 }
 
 .main {
     display: flex;
     flex: 1;
-    min-height: 0; /* bardzo ważne dla scrollowania wnętrza */
+    min-height: 0; /* bardzo ważne! */
+    overflow: hidden; /* ukrywa dodatkowy scroll */
 }
 
-/* ===== SIDEBAR ===== */
+/* === SIDEBAR === */
 .sidebar {
     width: 260px;
+    background-color: #fff;
+    border-right: 1px solid #e0e0e0;
     overflow-y: auto;
     flex-shrink: 0;
-    border-right: 1px solid #e0e0e0;
-    background-color: #fff;
 }
 
-/* ===== GALERIA (scroll główny) ===== */
+/* === GALERIA Z GŁÓWNYM SCROLLEM === */
 .gallery-scroll {
     flex: 1;
     overflow-y: auto;
     padding: 1rem;
     box-sizing: border-box;
+    position: relative;
 }
 
-/* ===== HEADER ===== */
+/* === HEADER === */
 .header {
     display: flex;
     justify-content: space-between;
@@ -47,7 +49,6 @@ body, html, #root {
     border-bottom: 1px solid #e5e7eb;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04);
     z-index: 100;
-    font-family: 'Poppins', 'Inter', sans-serif;
 }
 
 .header h1 {
@@ -64,40 +65,37 @@ body, html, #root {
     flex-wrap: wrap;
 }
 
-.login-button {
+/* === STOPKA ZAWSZE WIDOCZNA === */
+.footer {
+    height: 40px;
+    background-color: #f8f8f8;
+    border-top: 1px solid #eee;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    color: #666;
+    flex-shrink: 0;
+}
+
+/* === BACK TO TOP (na scrollowanej galerii) === */
+.back-to-top {
+    position: fixed;
+    bottom: 60px; /* nad stopką */
+    right: 20px;
     background-color: #5c7cfa;
     color: white;
     border: none;
-    padding: 0.5rem 1.2rem;
-    border-radius: 8px;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    font-size: 1.2rem;
     cursor: pointer;
-    font-weight: 500;
-    font-size: 0.9rem;
-    display: flex;
-    align-items: center;
-    transition: background-color 0.2s ease, transform 0.15s ease;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.06);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    z-index: 999;
 }
 
-.login-button:hover {
-    background-color: #3b5bdb;
-    transform: translateY(-1px);
-}
-
-/* ===== FOOTER (zawsze widoczny) ===== */
-.footer {
-    position: sticky;
-    bottom: 0;
-    z-index: 1;
-    background-color: #f8f8f8;
-    padding: 0.5rem 1rem;
-    font-size: 0.75rem;
-    color: #666;
-    text-align: center;
-    border-top: 1px solid #eee;
-}
-
-/* ===== MOBILKI ===== */
+/* === MOBILKI === */
 @media (max-width: 768px) {
     .main {
         flex-direction: column;
@@ -108,17 +106,11 @@ body, html, #root {
         max-height: 200px;
     }
 
-    .header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 0.5rem;
-    }
-
-    .login-button {
-        align-self: flex-end;
-    }
-
     .gallery-scroll {
         padding: 1rem 0.5rem;
+    }
+
+    .footer {
+        font-size: 0.65rem;
     }
 }
