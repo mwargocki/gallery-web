@@ -5,14 +5,17 @@ function BackToTopButton() {
     const [visible, setVisible] = useState(false);
 
     useEffect(() => {
+        const gallery = document.getElementById('gallery-scroll');
+        if (!gallery) return;
+
         const handleScroll = () => {
-            setVisible(document.getElementById('gallery-scroll')?.scrollTop! > 200);
+            setVisible(gallery.scrollTop > 200);
         };
 
-        const gallery = document.getElementById('gallery-scroll');
-        gallery?.addEventListener('scroll', handleScroll);
+        gallery.addEventListener('scroll', handleScroll);
+        handleScroll(); // uruchom raz przy montowaniu
 
-        return () => gallery?.removeEventListener('scroll', handleScroll);
+        return () => gallery.removeEventListener('scroll', handleScroll);
     }, []);
 
     const scrollToTop = () => {
