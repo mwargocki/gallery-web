@@ -17,7 +17,7 @@ function EditPhotoForm({ photo, onClose, onSave }: Props) {
     const [color, setColor] = useState(photo.color);
     const [material, setMaterial] = useState(photo.material);
     const [type, setType] = useState(photo.type);
-    const [height, setHeight] = useState(photo.height);
+    const [height, setHeight] = useState(photo.height.toString()); // zmiana: string
     const [error, setError] = useState<string | null>(null);
 
     const [colorOptions, setColorOptions] = useState<string[]>([]);
@@ -52,17 +52,23 @@ function EditPhotoForm({ photo, onClose, onSave }: Props) {
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
 
+        const parsedHeight = parseFloat(height);
+        if (!height || isNaN(parsedHeight) || parsedHeight <= 0) {
+            setError(t('editPhoto.errors.invalidHeight'));
+            return;
+        }
+
         fetch(`${process.env.REACT_APP_API_URL}/api/photos/${photo.id}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
                 Authorization: `Bearer ${getToken()!}`
             },
-            body: JSON.stringify({ color, material, type, height }),
+            body: JSON.stringify({ color, material, type, height: parsedHeight }),
             credentials: 'include'
         })
             .then(res => {
-                if (!res.ok) throw new Error(t('editPhoto.error'));
+                if (!res.ok) throw new Error(t('editPhoto.errors.upload'));
                 return res.json();
             })
             .then(() => {
@@ -131,10 +137,23 @@ function EditPhotoForm({ photo, onClose, onSave }: Props) {
                     <Ruler size={20} />
                     <input
                         type="number"
+                        inputMode="decimal"
+                        step="any"
+                        min="0"
+                        max="1000000"
                         placeholder={t('editPhoto.height')}
                         value={height}
-                        onChange={(e) => setHeight(parseInt(e.target.value))}
+                        onChange={(e) => {
+                            const value = e.target.value;
+                            setHeight(value);
+                        }}
+                        onKeyDown={(e) => {
+                            if (e.key === 'e' || e.key === 'E') {
+                                e.preventDefault(); // blokuje notację naukową
+                            }
+                        }}
                     />
+
                 </div>
 
                 <div className="edit-photo-form-buttons">

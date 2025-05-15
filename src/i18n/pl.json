@@ -47,7 +47,10 @@
     "height": "Wysokość (cm)",
     "save": "Zapisz",
     "cancel": "Anuluj",
-    "error": "Nie udało się zaktualizować zdjęcia"
+    "errors": {
+      "invalidHeight": "Wysokość musi być większa niż 0.",
+      "upload": "Nie udało się zaktualizować zdjęcia"
+    }
   },
   "deleteConfirm": {
     "title": "Czy na pewno chcesz usunąć to zdjęcie?",

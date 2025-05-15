@@ -48,7 +48,8 @@ function UploadForm({ onUploadSuccess, onClose }: Props) {
             return;
         }
 
-        if (!height || parseInt(height, 10) <= 0) {
+        const parsedHeight = parseFloat(height);
+        if (!height || isNaN(parsedHeight) || parsedHeight <= 0) {
             setError(t('upload.errors.invalidHeight'));
             return;
         }
@@ -58,7 +59,7 @@ function UploadForm({ onUploadSuccess, onClose }: Props) {
         formData.append(
             'photo',
             new Blob(
-                [JSON.stringify({ color, material, type, height: parseInt(height, 10) })],
+                [JSON.stringify({ color, material, type, height: parsedHeight })],
                 { type: 'application/json' }
             )
         );
@@ -159,16 +160,20 @@ function UploadForm({ onUploadSuccess, onClose }: Props) {
                     <Ruler size={20} />
                     <input
                         type="number"
-                        inputMode="numeric"
+                        inputMode="decimal"
+                        step="any"
+                        min="0"
+                        max="1000000"
                         placeholder={t('upload.height')}
                         value={height}
-                        onChange={(e) => {
-                            const value = e.target.value;
-                            if (/^\d*$/.test(value)) {
-                                setHeight(value);
+                        onChange={(e) => setHeight(e.target.value)}
+                        onKeyDown={(e) => {
+                            if (e.key === 'e' || e.key === 'E') {
+                                e.preventDefault(); // 🔒 blokada notacji naukowej
                             }
                         }}
                     />
+
                 </div>
 
                 <div className="upload-form-buttons">

@@ -5,6 +5,7 @@ import { isLoggedIn } from '../utils/auth';
 import { useTranslation } from 'react-i18next';
 import { translateOrFallback } from '../utils/translateOrFallback';
 import { Palette, Hammer, Layers, Ruler } from 'lucide-react';
+import { formatHeight } from '../utils/formatHeight';
 
 interface Props {
     photo: Photo;
@@ -73,7 +74,7 @@ function PhotoModal({ photo, onClose, onDelete, onEdit, isEditing = false, onPre
                     <p><Palette size={16} /><strong>{t('photo.color')}:</strong> {translateOrFallback('color', photo.color)}</p>
                     <p><Layers size={16} /><strong>{t('photo.type')}:</strong> {translateOrFallback('type', photo.type)}</p>
                     <p><Hammer size={16} /><strong>{t('photo.material')}:</strong> {translateOrFallback('material', photo.material)}</p>
-                    <p><Ruler size={16} /><strong>{t('photo.height')}:</strong> {photo.height} cm</p>
+                    <p><Ruler size={16} /><strong>{t('photo.height')}:</strong> {formatHeight(photo.height)} cm</p>
                     <p><strong>{t('photo.added')}:</strong> {new Date(photo.createdAt).toLocaleDateString('pl-PL')}</p>
                 </div>
 

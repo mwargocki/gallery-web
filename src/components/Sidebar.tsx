@@ -107,9 +107,18 @@ function Sidebar({ filters, onChange, totalElements }: FilterProps) {
                 <Ruler size={20} />
                 <input
                     type="number"
+                    inputMode="decimal"
+                    step="any"
+                    min="0"
+                    max="1000000"
                     placeholder={t('sidebar.min')}
                     value={filters.minHeight ?? ''}
                     onChange={(e) => handleChange('minHeight', e.target.value)}
+                    onKeyDown={(e) => {
+                        if (e.key === 'e' || e.key === 'E') {
+                            e.preventDefault();
+                        }
+                    }}
                 />
             </div>
 
@@ -117,9 +126,18 @@ function Sidebar({ filters, onChange, totalElements }: FilterProps) {
                 <Ruler size={20} />
                 <input
                     type="number"
+                    inputMode="decimal"
+                    step="any"
+                    min="0"
+                    max="1000000"
                     placeholder={t('sidebar.max')}
                     value={filters.maxHeight ?? ''}
                     onChange={(e) => handleChange('maxHeight', e.target.value)}
+                    onKeyDown={(e) => {
+                        if (e.key === 'e' || e.key === 'E') {
+                            e.preventDefault();
+                        }
+                    }}
                 />
             </div>
 
