@@ -43,7 +43,6 @@ function AddUserForm({ onClose }: Props) {
         })
             .then(res => {
                 if (!res.ok) throw new Error(t('addUser.error'));
-                return res.json();
             })
             .then(() => {
                 onClose();
