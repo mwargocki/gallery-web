@@ -74,10 +74,10 @@ function App() {
                     <Routes>
                         <Route
                             path="/"
-                            element={<Navigate to="/photos" />}
+                            element={<Navigate to="/angels" />}
                         />
                         <Route
-                            path="/photos"
+                            path="/angels"
                             element={
                                 <Gallery
                                     filters={filters}
@@ -90,7 +90,7 @@ function App() {
                             }
                         />
                         <Route
-                            path="/photos/:photoId"
+                            path="/angels/:angelId"
                             element={
                                 <Gallery
                                     filters={filters}

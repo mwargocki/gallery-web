@@ -10,7 +10,7 @@ import {
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { usePluralizedPhoto } from '../utils/usePluralizedPhoto';
+import { usePluralizedAngel } from '../utils/usePluralizedAngel';
 import { translateOrFallback } from '../utils/translateOrFallback';
 
 export interface Filters {
@@ -30,7 +30,7 @@ interface FilterProps {
 
 function Sidebar({ filters, onChange, totalElements }: FilterProps) {
     const { t } = useTranslation();
-    const pluralizePhoto = usePluralizedPhoto();
+    const pluralizeAngel = usePluralizedAngel();
 
     const [colors, setColors] = useState<string[]>([]);
     const [types, setTypes] = useState<string[]>([]);
@@ -164,7 +164,7 @@ function Sidebar({ filters, onChange, totalElements }: FilterProps) {
 
             <div className="sidebar-counter">
                 <Camera size={18} strokeWidth={1.8} />
-                <span>{pluralizePhoto(totalElements)}</span>
+                <span>{pluralizeAngel(totalElements)}</span>
             </div>
         </aside>
     );

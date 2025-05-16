@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 
-export function usePluralizedPhoto() {
+export function usePluralizedAngel() {
     const { t } = useTranslation();
 
     return (count: number): string => {

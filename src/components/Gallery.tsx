@@ -1,10 +1,10 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import Masonry from 'react-masonry-css';
 import './Gallery.css';
-import { Photo } from '../types';
-import PhotoModal from './PhotoModal';
+import { Angel } from '../types';
+import AngelModal from './AngelModal';
 import DeleteConfirmModal from './DeleteConfirmModal';
-import EditPhotoForm from './EditPhotoForm';
+import EditAngelForm from './EditAngelForm';
 import { Filters } from './Sidebar';
 import { getToken } from '../utils/auth';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
@@ -20,12 +20,12 @@ interface GalleryProps {
 function Gallery({ filters, setFilters, setTotalElements, triggerSidebarReload }: GalleryProps) {
     const { t } = useTranslation();
 
-    const [photos, setPhotos] = useState<Photo[]>([]);
+    const [angels, setAngels] = useState<Angel[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-    const [selectedPhoto, setSelectedPhoto] = useState<Photo | null>(null);
-    const [photoToDelete, setPhotoToDelete] = useState<Photo | null>(null);
-    const [photoToEdit, setPhotoToEdit] = useState<Photo | null>(null);
+    const [selectedAngel, setSelectedAngel] = useState<Angel | null>(null);
+    const [angelToDelete, setAngelToDelete] = useState<Angel | null>(null);
+    const [angelToEdit, setAngelToEdit] = useState<Angel | null>(null);
     const [hasMore, setHasMore] = useState(true);
     const [page, setPage] = useState(0);
 
@@ -34,10 +34,10 @@ function Gallery({ filters, setFilters, setTotalElements, triggerSidebarReload }
 
     const navigate = useNavigate();
     const location = useLocation();
-    const { photoId } = useParams();
+    const { angelId } = useParams();
     const previousLocationRef = useRef<string | null>(null);
 
-    const fetchPhotos = useCallback((pageToLoad: number, reset = false) => {
+    const fetchAngels = useCallback((pageToLoad: number, reset = false) => {
         if (isFetchingRef.current) return;
         isFetchingRef.current = true;
 
@@ -51,13 +51,13 @@ function Gallery({ filters, setFilters, setTotalElements, triggerSidebarReload }
         params.append('page', String(pageToLoad));
         params.append('size', '12');
 
-        fetch(`${process.env.REACT_APP_API_URL}/api/photos?${params.toString()}`)
+        fetch(`${process.env.REACT_APP_API_URL}/api/angels?${params.toString()}`)
             .then(res => {
                 if (!res.ok) throw new Error(t('gallery.fetchError'));
                 return res.json();
             })
             .then(data => {
-                setPhotos(prev => reset ? data.content : [...prev, ...data.content]);
+                setAngels(prev => reset ? data.content : [...prev, ...data.content]);
                 setHasMore(!data.last);
                 setPage(pageToLoad + 1);
                 setTotalElements(data.totalElements);
@@ -71,18 +71,18 @@ function Gallery({ filters, setFilters, setTotalElements, triggerSidebarReload }
 
     const filtersKey = JSON.stringify(filters);
     useEffect(() => {
-        setPhotos([]);
+        setAngels([]);
         setPage(0);
         setHasMore(true);
-        fetchPhotos(0, true);
-    }, [filtersKey, fetchPhotos]);
+        fetchAngels(0, true);
+    }, [filtersKey, fetchAngels]);
 
     useEffect(() => {
         if (!hasMore || loading) return;
 
         const observer = new IntersectionObserver(entries => {
             if (entries[0].isIntersecting) {
-                fetchPhotos(page);
+                fetchAngels(page);
             }
         });
 
@@ -91,68 +91,68 @@ function Gallery({ filters, setFilters, setTotalElements, triggerSidebarReload }
         }
 
         return () => observer.disconnect();
-    }, [page, hasMore, loading, fetchPhotos]);
+    }, [page, hasMore, loading, fetchAngels]);
 
     useEffect(() => {
-        if (photoId) {
-            fetch(`${process.env.REACT_APP_API_URL}/api/photos/${photoId}`)
+        if (angelId) {
+            fetch(`${process.env.REACT_APP_API_URL}/api/angels/${angelId}`)
                 .then(res => {
                     if (!res.ok) throw new Error(t('gallery.notFound'));
                     return res.json();
                 })
-                .then(data => setSelectedPhoto(data))
+                .then(data => setSelectedAngel(data))
                 .catch(err => {
                     alert(err.message);
-                    navigate('/photos');
+                    navigate('/angels');
                 });
         }
-    }, [photoId, navigate, t]);
+    }, [angelId, navigate, t]);
 
-    const handleDelete = (photoId: number) => {
-        fetch(`${process.env.REACT_APP_API_URL}/api/photos/${photoId}`, {
+    const handleDelete = (angelId: number) => {
+        fetch(`${process.env.REACT_APP_API_URL}/api/angels/${angelId}`, {
             method: 'DELETE',
             headers: { Authorization: `Bearer ${getToken()!}` },
             credentials: 'include'
         })
             .then(res => {
                 if (!res.ok) throw new Error(t('gallery.deleteError'));
-                setPhotoToDelete(null);
-                setSelectedPhoto(null);
-                setPhotos(prev => prev.filter(p => p.id !== photoId));
-                navigate(previousLocationRef.current || '/photos');
-                fetchPhotos(0, true);
+                setAngelToDelete(null);
+                setSelectedAngel(null);
+                setAngels(prev => prev.filter(p => p.id !== angelId));
+                navigate(previousLocationRef.current || '/angels');
+                fetchAngels(0, true);
                 triggerSidebarReload();
             })
             .catch(err => alert(err.message));
     };
 
     const handlePrev = () => {
-        if (!selectedPhoto) return;
-        const index = photos.findIndex(p => p.id === selectedPhoto.id);
+        if (!selectedAngel) return;
+        const index = angels.findIndex(p => p.id === selectedAngel.id);
         if (index > 0) {
-            const prevPhoto = photos[index - 1];
-            setSelectedPhoto(prevPhoto);
-            navigate(`/photos/${prevPhoto.id}`);
+            const prevAngel = angels[index - 1];
+            setSelectedAngel(prevAngel);
+            navigate(`/angels/${prevAngel.id}`);
         }
     };
 
     const handleNext = () => {
-        if (!selectedPhoto) return;
-        const index = photos.findIndex(p => p.id === selectedPhoto.id);
+        if (!selectedAngel) return;
+        const index = angels.findIndex(p => p.id === selectedAngel.id);
         const nextIndex = index + 1;
 
-        if (nextIndex < photos.length) {
-            const nextPhoto = photos[nextIndex];
-            setSelectedPhoto(nextPhoto);
-            navigate(`/photos/${nextPhoto.id}`);
+        if (nextIndex < angels.length) {
+            const nextAngel = angels[nextIndex];
+            setSelectedAngel(nextAngel);
+            navigate(`/angels/${nextAngel.id}`);
         } else if (hasMore) {
-            fetchPhotos(page);
-            const checkNextPhoto = setInterval(() => {
-                if (photos.length > nextIndex) {
-                    const nextPhoto = photos[nextIndex];
-                    setSelectedPhoto(nextPhoto);
-                    navigate(`/photos/${nextPhoto.id}`);
-                    clearInterval(checkNextPhoto);
+            fetchAngels(page);
+            const checkNextAngel = setInterval(() => {
+                if (angels.length > nextIndex) {
+                    const nextAngel = angels[nextIndex];
+                    setSelectedAngel(nextAngel);
+                    navigate(`/angels/${nextAngel.id}`);
+                    clearInterval(checkNextAngel);
                 }
             }, 100);
         }
@@ -164,11 +164,11 @@ function Gallery({ filters, setFilters, setTotalElements, triggerSidebarReload }
         600: 2
     };
 
-    const currentIndex = selectedPhoto ? photos.findIndex(p => p.id === selectedPhoto.id) : -1;
+    const currentIndex = selectedAngel ? angels.findIndex(p => p.id === selectedAngel.id) : -1;
     const canGoPrev = currentIndex > 0;
-    const canGoNext = currentIndex < photos.length - 1 || hasMore;
+    const canGoNext = currentIndex < angels.length - 1 || hasMore;
 
-    if (loading && photos.length === 0) return <p>{t('gallery.loading')}</p>;
+    if (loading && angels.length === 0) return <p>{t('gallery.loading')}</p>;
     if (error) return <p>{t('gallery.error', { error })}</p>;
 
     return (
@@ -178,20 +178,20 @@ function Gallery({ filters, setFilters, setTotalElements, triggerSidebarReload }
                 className="gallery"
                 columnClassName="gallery-column"
             >
-                {photos.map(photo => (
+                {angels.map(angel => (
                     <div
-                        className="photo"
-                        key={photo.id}
+                        className="angel"
+                        key={angel.id}
                         onClick={() => {
                             if (!previousLocationRef.current) {
                                 previousLocationRef.current = location.pathname + location.search;
                             }
-                            navigate(`/photos/${photo.id}`);
+                            navigate(`/angels/${angel.id}`);
                         }}
                     >
                         <img
-                            src={`${process.env.REACT_APP_API_URL}/api/images/${photo.thumbnail ?? photo.filename}`}
-                            alt={t('gallery.alt', { id: photo.id })}
+                            src={`${process.env.REACT_APP_API_URL}/api/photos/${angel.thumbnail ?? angel.photo}`}
+                            alt={t('gallery.alt', { id: angel.id })}
                             loading="lazy"
                         />
                     </div>
@@ -200,40 +200,40 @@ function Gallery({ filters, setFilters, setTotalElements, triggerSidebarReload }
 
             {hasMore && <div ref={sentinelRef} style={{ height: '1px' }} />}
 
-            {selectedPhoto && (
-                <PhotoModal
-                    photo={selectedPhoto}
+            {selectedAngel && (
+                <AngelModal
+                    angel={selectedAngel}
                     onClose={() => {
-                        setSelectedPhoto(null);
-                        navigate(previousLocationRef.current || '/photos');
+                        setSelectedAngel(null);
+                        navigate(previousLocationRef.current || '/angels');
                         setTimeout(() => {
                             previousLocationRef.current = null;
                         }, 0);
                     }}
-                    onDelete={() => setPhotoToDelete(selectedPhoto)}
-                    onEdit={() => setPhotoToEdit(selectedPhoto)}
-                    isEditing={!!photoToEdit || !!photoToDelete}
+                    onDelete={() => setAngelToDelete(selectedAngel)}
+                    onEdit={() => setAngelToEdit(selectedAngel)}
+                    isEditing={!!angelToEdit || !!angelToDelete}
                     onPrev={canGoPrev ? handlePrev : undefined}
                     onNext={canGoNext ? handleNext : undefined}
                 />
             )}
 
-            {photoToDelete && (
+            {angelToDelete && (
                 <DeleteConfirmModal
-                    onCancel={() => setPhotoToDelete(null)}
-                    onConfirm={() => handleDelete(photoToDelete.id)}
+                    onCancel={() => setAngelToDelete(null)}
+                    onConfirm={() => handleDelete(angelToDelete.id)}
                 />
             )}
 
-            {photoToEdit && (
-                <EditPhotoForm
-                    photo={photoToEdit}
-                    onClose={() => setPhotoToEdit(null)}
+            {angelToEdit && (
+                <EditAngelForm
+                    angel={angelToEdit}
+                    onClose={() => setAngelToEdit(null)}
                     onSave={() => {
-                        fetch(`${process.env.REACT_APP_API_URL}/api/photos/${photoToEdit.id}`)
+                        fetch(`${process.env.REACT_APP_API_URL}/api/angels/${angelToEdit.id}`)
                             .then(res => res.json())
                             .then(updated => {
-                                setSelectedPhoto(updated);
+                                setSelectedAngel(updated);
                                 triggerSidebarReload();
                             });
                     }}

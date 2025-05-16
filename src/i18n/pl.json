@@ -5,7 +5,7 @@
   "header": {
     "title": "Anielskie Skrzypce",
     "subtitle": "Prywatna kolekcja aniołów grających na skrzypcach",
-    "upload_photo": "Dodaj zdjęcie",
+    "upload_angel": "Dodaj anioła",
     "new_user": "Nowy użytkownik",
     "logout": "Wyloguj",
     "login": "Zaloguj"
@@ -26,7 +26,7 @@
     "error": "Nie udało się dodać użytkownika"
   },
   "upload": {
-    "title": "Dodaj nowe zdjęcie",
+    "title": "Dodaj nowego anioła",
     "color": "Kolor",
     "material": "Materiał",
     "type": "Typ",
@@ -34,12 +34,12 @@
     "submit": "Dodaj",
     "cancel": "Anuluj",
     "errors": {
-      "noFile": "Wybierz plik ze zdjęciem.",
+      "noFile": "Wybierz zdjęcie anioła.",
       "invalidHeight": "Wysokość musi być większa niż 0.",
-      "uploadFailed": "Błąd podczas przesyłania zdjęcia"
+      "uploadFailed": "Błąd podczas dodawania anioła."
     }
   },
-  "editPhoto": {
+  "editAngel": {
     "title": "Edytuj atrybuty",
     "color": "Kolor",
     "material": "Materiał",
@@ -49,25 +49,25 @@
     "cancel": "Anuluj",
     "errors": {
       "invalidHeight": "Wysokość musi być większa niż 0.",
-      "upload": "Nie udało się zaktualizować zdjęcia"
+      "upload": "Nie udało się zaktualizować anioła"
     }
   },
   "deleteConfirm": {
-    "title": "Czy na pewno chcesz usunąć to zdjęcie?",
+    "title": "Czy na pewno chcesz usunąć anioła?",
     "confirm": "Tak, usuń",
     "cancel": "Anuluj"
   },
-  "photo": {
-    "id": "Zdjęcie",
+  "angel": {
+    "id": "Anioł",
     "type": "Typ",
     "color": "Kolor",
     "material": "Materiał",
     "height": "Wysokość",
     "added": "Dodano",
     "edit": "Edytuj",
-    "delete": "Usuń zdjęcie",
+    "delete": "Usuń anioła",
     "close": "Zamknij",
-    "alt": "Zdjęcie - {{id}}"
+    "alt": "Anioł - {{id}}"
   },
   "sidebar": {
     "attributes": "Atrybuty",
@@ -87,18 +87,18 @@
     "reset": "Resetuj filtry"
   },
   "counter": {
-    "count_0": "zdjęć",
-    "count_1": "zdjęcie",
-    "count_234": "zdjęcia",
-    "count_other": "zdjęć"
+    "count_0": "aniołów",
+    "count_1": "anioł",
+    "count_234": "anioły",
+    "count_other": "aniołów"
   },
   "gallery": {
     "loading": "Ładowanie...",
     "error": "Błąd: {{error}}",
-    "fetchError": "Nie udało się pobrać zdjęć",
-    "notFound": "Nie znaleziono zdjęcia",
-    "deleteError": "Błąd podczas usuwania zdjęcia",
-    "alt": "Zdjęcie - {{id}}"
+    "fetchError": "Nie udało się pobrać aniołów",
+    "notFound": "Nie znaleziono anioła",
+    "deleteError": "Błąd podczas usuwania anioła",
+    "alt": "Angel - {{id}}"
   },
   "color": {
     "czerwony": "Czerwony",

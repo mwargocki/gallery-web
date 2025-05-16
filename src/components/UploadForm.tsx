@@ -57,14 +57,14 @@ function UploadForm({ onUploadSuccess, onClose }: Props) {
         const formData = new FormData();
         formData.append('file', file);
         formData.append(
-            'photo',
+            'angel',
             new Blob(
                 [JSON.stringify({ color, material, type, height: parsedHeight })],
                 { type: 'application/json' }
             )
         );
 
-        fetch(`${process.env.REACT_APP_API_URL}/api/photos`, {
+        fetch(`${process.env.REACT_APP_API_URL}/api/angels`, {
             method: 'POST',
             headers: { Authorization: `Bearer ${getToken()!}` },
             body: formData,

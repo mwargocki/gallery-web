@@ -1,4 +1,4 @@
-.photo-modal-backdrop {
+.angel-modal-backdrop {
     position: fixed;
     top: 0;
     left: 0;
@@ -13,7 +13,7 @@
     animation: fadeIn 0.3s ease-in-out;
 }
 
-.photo-modal {
+.angel-modal {
     background: white;
     padding: 1.5rem;
     border-radius: 12px;
@@ -25,13 +25,13 @@
     animation: scaleIn 0.3s ease-in-out;
 }
 
-.photo-modal img {
+.angel-modal img {
     width: 100%;
     border-radius: 8px;
     margin-bottom: 1rem;
 }
 
-.photo-details {
+.angel-details {
     margin-bottom: 1rem;
     font-size: 0.95rem;
     color: #333;
@@ -114,7 +114,7 @@
     right: 10px;
 }
 
-.photo-details p {
+.angel-details p {
     display: flex;
     align-items: center;
     gap: 0.4rem;

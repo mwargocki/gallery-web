@@ -50,7 +50,7 @@ function Header({ authenticated, onLogout, onShowLogin, onShowUpload, onShowAddU
                     <>
                         <button className="login-button" onClick={onShowUpload}>
                             <Plus size={16} style={{ marginRight: 6 }} />
-                            {t('header.upload_photo')}
+                            {t('header.upload_angel')}
                         </button>
                         <button className="login-button" onClick={onShowAddUser}>
                             <UserPlus size={16} style={{ marginRight: 6 }} />

@@ -1,23 +1,23 @@
 import { useEffect, useRef, useState } from 'react';
-import { Photo } from '../types';
+import { Angel } from '../types';
 import { getToken } from '../utils/auth';
-import './EditPhotoForm.css';
+import './EditAngelForm.css';
 import { useTranslation } from 'react-i18next';
 import { Palette, Hammer, Layers, Ruler } from 'lucide-react';
 
 interface Props {
-    photo: Photo;
+    angel: Angel;
     onClose: () => void;
     onSave: () => void;
 }
 
-function EditPhotoForm({ photo, onClose, onSave }: Props) {
+function EditAngelForm({ angel, onClose, onSave }: Props) {
     const { t } = useTranslation();
 
-    const [color, setColor] = useState(photo.color);
-    const [material, setMaterial] = useState(photo.material);
-    const [type, setType] = useState(photo.type);
-    const [height, setHeight] = useState(photo.height.toString()); // zmiana: string
+    const [color, setColor] = useState(angel.color);
+    const [material, setMaterial] = useState(angel.material);
+    const [type, setType] = useState(angel.type);
+    const [height, setHeight] = useState(angel.height.toString()); // zmiana: string
     const [error, setError] = useState<string | null>(null);
 
     const [colorOptions, setColorOptions] = useState<string[]>([]);
@@ -54,11 +54,11 @@ function EditPhotoForm({ photo, onClose, onSave }: Props) {
 
         const parsedHeight = parseFloat(height);
         if (!height || isNaN(parsedHeight) || parsedHeight <= 0) {
-            setError(t('editPhoto.errors.invalidHeight'));
+            setError(t('editAngel.errors.invalidHeight'));
             return;
         }
 
-        fetch(`${process.env.REACT_APP_API_URL}/api/photos/${photo.id}`, {
+        fetch(`${process.env.REACT_APP_API_URL}/api/angels/${angel.id}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -68,7 +68,7 @@ function EditPhotoForm({ photo, onClose, onSave }: Props) {
             credentials: 'include'
         })
             .then(res => {
-                if (!res.ok) throw new Error(t('editPhoto.errors.upload'));
+                if (!res.ok) throw new Error(t('editAngel.errors.upload'));
                 return res.json();
             })
             .then(() => {
@@ -84,15 +84,15 @@ function EditPhotoForm({ photo, onClose, onSave }: Props) {
             ref={backdropRef}
             onMouseDown={handleMouseDown}
         >
-            <form className="edit-modal edit-photo-form-inner" onClick={e => e.stopPropagation()} onSubmit={handleSubmit}>
-                <h2>{t('editPhoto.title')}</h2>
+            <form className="edit-modal edit-angel-form-inner" onClick={e => e.stopPropagation()} onSubmit={handleSubmit}>
+                <h2>{t('editAngel.title')}</h2>
                 {error && <p className="error">{error}</p>}
 
                 <div className="edit-form-item tight">
                     <Palette size={20} />
                     <input
                         list="colors"
-                        placeholder={t('editPhoto.color')}
+                        placeholder={t('editAngel.color')}
                         value={color}
                         onChange={(e) => setColor(e.target.value)}
                     />
@@ -107,7 +107,7 @@ function EditPhotoForm({ photo, onClose, onSave }: Props) {
                     <Hammer size={20} />
                     <input
                         list="materials"
-                        placeholder={t('editPhoto.material')}
+                        placeholder={t('editAngel.material')}
                         value={material}
                         onChange={(e) => setMaterial(e.target.value)}
                     />
@@ -122,7 +122,7 @@ function EditPhotoForm({ photo, onClose, onSave }: Props) {
                     <Layers size={20} />
                     <input
                         list="types"
-                        placeholder={t('editPhoto.type')}
+                        placeholder={t('editAngel.type')}
                         value={type}
                         onChange={(e) => setType(e.target.value)}
                     />
@@ -141,7 +141,7 @@ function EditPhotoForm({ photo, onClose, onSave }: Props) {
                         step="any"
                         min="0"
                         max="1000000"
-                        placeholder={t('editPhoto.height')}
+                        placeholder={t('editAngel.height')}
                         value={height}
                         onChange={(e) => {
                             const value = e.target.value;
@@ -156,13 +156,13 @@ function EditPhotoForm({ photo, onClose, onSave }: Props) {
 
                 </div>
 
-                <div className="edit-photo-form-buttons">
-                    <button type="submit">{t('editPhoto.save')}</button>
-                    <button type="button" onClick={onClose}>{t('editPhoto.cancel')}</button>
+                <div className="edit-angel-form-buttons">
+                    <button type="submit">{t('editAngel.save')}</button>
+                    <button type="button" onClick={onClose}>{t('editAngel.cancel')}</button>
                 </div>
             </form>
         </div>
     );
 }
 
-export default EditPhotoForm;
+export default EditAngelForm;

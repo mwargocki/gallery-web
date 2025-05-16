@@ -1,7 +1,7 @@
-export interface Photo {
+export interface Angel {
     id: number;
     thumbnail?: string;
-    filename: string;
+    photo: string;
     height: number;
     color: string;
     material: string;

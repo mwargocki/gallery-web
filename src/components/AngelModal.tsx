@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
-import './PhotoModal.css';
-import { Photo } from '../types';
+import './AngelModal.css';
+import { Angel } from '../types';
 import { isLoggedIn } from '../utils/auth';
 import { useTranslation } from 'react-i18next';
 import { translateOrFallback } from '../utils/translateOrFallback';
@@ -8,7 +8,7 @@ import { Palette, Hammer, Layers, Ruler } from 'lucide-react';
 import { formatHeight } from '../utils/formatHeight';
 
 interface Props {
-    photo: Photo;
+    angel: Angel;
     onClose: () => void;
     onDelete?: () => void;
     onEdit?: () => void;
@@ -17,7 +17,7 @@ interface Props {
     onNext?: () => void;
 }
 
-function PhotoModal({ photo, onClose, onDelete, onEdit, isEditing = false, onPrev, onNext }: Props) {
+function AngelModal({ angel, onClose, onDelete, onEdit, isEditing = false, onPrev, onNext }: Props) {
     const { t } = useTranslation();
     const backdropRef = useRef<HTMLDivElement>(null);
 
@@ -46,11 +46,11 @@ function PhotoModal({ photo, onClose, onDelete, onEdit, isEditing = false, onPre
 
     return (
         <div
-            className="photo-modal-backdrop"
+            className="angel-modal-backdrop"
             ref={backdropRef}
             onMouseDown={handleMouseDown}
         >
-            <div className="photo-modal" onClick={e => e.stopPropagation()}>
+            <div className="angel-modal" onClick={e => e.stopPropagation()}>
                 {onPrev && (
                     <button className="nav-arrow left" onClick={onPrev}>
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="black" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -59,7 +59,7 @@ function PhotoModal({ photo, onClose, onDelete, onEdit, isEditing = false, onPre
                     </button>
                 )}
 
-                <img src={`${process.env.REACT_APP_API_URL}/api/images/${photo.filename}`} alt={t('photo.alt', { id: photo.id })} />
+                <img src={`${process.env.REACT_APP_API_URL}/api/photos/${angel.photo}`} alt={t('photo.alt', { id: angel.id })} />
 
                 {onNext && (
                     <button className="nav-arrow right" onClick={onNext}>
@@ -69,27 +69,27 @@ function PhotoModal({ photo, onClose, onDelete, onEdit, isEditing = false, onPre
                     </button>
                 )}
 
-                <div className="photo-details">
-                    <p><strong>{t('photo.id')}:</strong> {photo.id}</p>
-                    <p><Palette size={16} /><strong>{t('photo.color')}:</strong> {translateOrFallback('color', photo.color)}</p>
-                    <p><Layers size={16} /><strong>{t('photo.type')}:</strong> {translateOrFallback('type', photo.type)}</p>
-                    <p><Hammer size={16} /><strong>{t('photo.material')}:</strong> {translateOrFallback('material', photo.material)}</p>
-                    <p><Ruler size={16} /><strong>{t('photo.height')}:</strong> {formatHeight(photo.height)} cm</p>
-                    <p><strong>{t('photo.added')}:</strong> {new Date(photo.createdAt).toLocaleDateString('pl-PL')}</p>
+                <div className="angel-details">
+                    <p><strong>{t('angel.id')}:</strong> {angel.id}</p>
+                    <p><Palette size={16} /><strong>{t('angel.color')}:</strong> {translateOrFallback('color', angel.color)}</p>
+                    <p><Layers size={16} /><strong>{t('angel.type')}:</strong> {translateOrFallback('type', angel.type)}</p>
+                    <p><Hammer size={16} /><strong>{t('angel.material')}:</strong> {translateOrFallback('material', angel.material)}</p>
+                    <p><Ruler size={16} /><strong>{t('angel.height')}:</strong> {formatHeight(angel.height)} cm</p>
+                    <p><strong>{t('angel.added')}:</strong> {new Date(angel.createdAt).toLocaleDateString('pl-PL')}</p>
                 </div>
 
                 <div className="modal-actions">
                     {isLoggedIn() && onEdit && (
-                        <button onClick={onEdit}>{t('photo.edit')}</button>
+                        <button onClick={onEdit}>{t('angel.edit')}</button>
                     )}
                     {isLoggedIn() && onDelete && (
-                        <button className="danger" onClick={onDelete}>{t('photo.delete')}</button>
+                        <button className="danger" onClick={onDelete}>{t('angel.delete')}</button>
                     )}
-                    <button onClick={onClose}>{t('photo.close')}</button>
+                    <button onClick={onClose}>{t('angel.close')}</button>
                 </div>
             </div>
         </div>
     );
 }
 
-export default PhotoModal;
+export default AngelModal;

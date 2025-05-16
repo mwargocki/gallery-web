@@ -5,7 +5,7 @@
   "header": {
     "title": "Angel's Violin",
     "subtitle": "Private collection of violin playing angels",
-    "upload_photo": "Upload Photo",
+    "upload_angel": "Add an angel",
     "new_user": "New User",
     "logout": "Logout",
     "login": "Log In"
@@ -26,7 +26,7 @@
     "error": "Failed to add user"
   },
   "upload": {
-    "title": "Upload new photo",
+    "title": "Upload new angel",
     "color": "Color",
     "material": "Material",
     "type": "Type",
@@ -34,12 +34,12 @@
     "submit": "Upload",
     "cancel": "Cancel",
     "errors": {
-      "noFile": "Please select a photo file.",
+      "noFile": "Select an angel photo.",
       "invalidHeight": "Height must be greater than 0.",
-      "uploadFailed": "Error while uploading the photo"
+      "uploadFailed": "Error while adding angel."
     }
   },
-  "editPhoto": {
+  "editAngel": {
     "title": "Edit attributes",
     "color": "Color",
     "material": "Material",
@@ -49,25 +49,25 @@
     "cancel": "Cancel",
     "errors": {
       "invalidHeight": "Height must be greater than 0.",
-      "upload": "Failed to update photo"
+      "upload": "Failed to update angel"
     }
   },
   "deleteConfirm": {
-    "title": "Are you sure you want to delete this photo?",
+    "title": "Are you sure you want to remove the angel?",
     "confirm": "Yes, delete it",
     "cancel": "Cancel"
   },
-  "photo": {
-    "id": "Photo",
+  "angel": {
+    "id": "Angel",
     "type": "Type",
     "color": "Color",
     "material": "Material",
     "height": "Height",
     "added": "Added",
     "edit": "Edit",
-    "delete": "Delete photo",
+    "delete": "Delete angel",
     "close": "Close",
-    "alt": "Photo - {{id}}"
+    "alt": "Angel - {{id}}"
   },
   "sidebar": {
     "attributes": "Attributes",
@@ -87,18 +87,18 @@
     "reset": "Reset filters"
   },
   "counter": {
-    "count_0": "photos",
-    "count_1": "photo",
-    "count_234": "photos",
-    "count_other": "photos"
+    "count_0": "angels",
+    "count_1": "angel",
+    "count_234": "angels",
+    "count_other": "angels"
   },
   "gallery": {
     "loading": "Loading...",
     "error": "Error: {{error}}",
-    "fetchError": "Failed to fetch photos",
-    "notFound": "Photo not found",
-    "deleteError": "Error deleting photo",
-    "alt": "Photo - {{id}}"
+    "fetchError": "Failed to fetch angels",
+    "notFound": "Angel not found",
+    "deleteError": "Error deleting the angel",
+    "alt": "Angel - {{id}}"
   },
   "color": {
     "czerwony": "Red",

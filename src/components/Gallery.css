@@ -9,7 +9,7 @@
     background-clip: padding-box;
 }
 
-.photo {
+.angel {
     margin-bottom: 1rem;
     background-color: #ffffff;
     border-radius: 10px;
@@ -18,13 +18,13 @@
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
-.photo:hover {
+.angel:hover {
     transform: scale(1.03);
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.8);
     cursor: pointer;
 }
 
-.photo img {
+.angel img {
     display: block;
     width: 100%;
     height: auto;
