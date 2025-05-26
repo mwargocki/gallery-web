@@ -190,7 +190,7 @@ function Gallery({ filters, setFilters, setTotalElements, triggerSidebarReload }
                         }}
                     >
                         <img
-                            src={`${process.env.REACT_APP_API_URL}/api/photos/${angel.thumbnail ?? angel.photo}`}
+                            src={`${process.env.REACT_APP_API_URL}/api/angels/${angel.id}/photos/${angel.thumbnail}/scaled`}
                             alt={t('gallery.alt', { id: angel.id })}
                             loading="lazy"
                         />

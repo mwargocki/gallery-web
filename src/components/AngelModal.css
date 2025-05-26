@@ -11,48 +11,111 @@
     align-items: center;
     z-index: 999;
     animation: fadeIn 0.3s ease-in-out;
+    overflow: visible;
 }
 
 .angel-modal {
     background: white;
     padding: 1.5rem;
     border-radius: 12px;
-    max-width: 600px;
-    width: 90%;
-    max-height: 90%;
-    overflow-y: auto;
+    max-width: 1000px;
+    width: 95%;
+    height: 90vh;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    position: relative;
     animation: scaleIn 0.3s ease-in-out;
+    overflow: visible;
 }
 
-.angel-modal img {
-    width: 100%;
+.angel-modal-body {
+    flex: 1;
+    display: flex;
+    gap: 1.5rem;
+    align-items: stretch;
+    overflow: hidden;
+    height: 100%;
+}
+
+.angel-photo-main {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+.angel-photo-main img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
     border-radius: 8px;
+    box-shadow: 0 0 6px rgba(0, 0, 0, 0.15);
+}
+
+.angel-photo-side {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* kluczowy fragment */
+    padding-bottom: 1rem;
+}
+
+.thumbnail-bar {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
     margin-bottom: 1rem;
+}
+
+.thumbnail-bar img {
+    height: 60px;
+    width: 60px;
+    object-fit: cover;
+    border-radius: 6px;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: border-color 0.2s ease-in-out;
+}
+
+.thumbnail-bar img.active {
+    border-color: #007bff;
 }
 
 .angel-details {
-    margin-bottom: 1rem;
+    width: 100%;
     font-size: 0.95rem;
-    color: #333;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    padding: 0 1rem;
+}
+
+.angel-details p {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
 }
 
 .modal-actions {
     display: flex;
     justify-content: flex-end;
-    flex-wrap: wrap;
     gap: 0.5rem;
-    margin-top: 1rem;
+    padding: 0 1rem;
+    margin-top: 0; /* lub usuń całkiem */
 }
 
 .modal-actions button {
     padding: 0.5rem 1rem;
     border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    font-weight: 500;
     background-color: #007bff;
     color: white;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
 }
 
 .modal-actions button:hover {
@@ -64,7 +127,52 @@
 }
 
 .modal-actions .danger:hover {
-    background-color: #a71d2a;
+    background-color: #a7192f;
+}
+
+.close-button {
+    position: absolute;
+    top: 10px;
+    right: 14px;
+    font-size: 1.4rem;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: #444;
+}
+
+.nav-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: white;
+    border: 2px solid #ccc;
+    border-radius: 50%;
+    padding: 0.4rem;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s ease;
+}
+
+.modal-actions.in-side {
+    justify-content: center;
+    margin-top: 1.5rem;
+    padding: 0;
+}
+
+.nav-arrow:hover {
+    background: #f0f0f0;
+}
+
+.nav-arrow.left {
+    left: -28px;
+}
+
+.nav-arrow.right {
+    right: -28px;
 }
 
 @keyframes fadeIn {
@@ -81,42 +189,4 @@
         transform: scale(1);
         opacity: 1;
     }
-}
-
-.nav-arrow {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 2rem;
-    background: rgba(255, 255, 255, 0.85);
-    border: none;
-    cursor: pointer;
-    z-index: 10;
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-    transition: background 0.2s ease;
-}
-
-.nav-arrow:hover {
-    background: rgba(255, 255, 255, 1);
-}
-
-.nav-arrow.left {
-    left: 10px;
-}
-
-.nav-arrow.right {
-    right: 10px;
-}
-
-.angel-details p {
-    display: flex;
-    align-items: center;
-    gap: 0.4rem;
-    margin: 0.4rem 0;
 }

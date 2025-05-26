@@ -12,8 +12,9 @@ interface Props {
 function UploadForm({ onUploadSuccess, onClose }: Props) {
     const { t } = useTranslation();
 
-    const [file, setFile] = useState<File | null>(null);
-    const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+    const [files, setFiles] = useState<File[]>([]);
+    const [previewUrls, setPreviewUrls] = useState<string[]>([]);
+
     const [color, setColor] = useState('');
     const [material, setMaterial] = useState('');
     const [type, setType] = useState('');
@@ -33,17 +34,22 @@ function UploadForm({ onUploadSuccess, onClose }: Props) {
     }, []);
 
     useEffect(() => {
-        const handleKeyDown = (e: KeyboardEvent) => {
-            if (e.key === 'Escape') onClose();
-        };
-        document.addEventListener('keydown', handleKeyDown);
-        return () => document.removeEventListener('keydown', handleKeyDown);
-    }, [onClose]);
+        if (!files.length) {
+            setPreviewUrls([]);
+            return;
+        }
 
-    const handleSubmit = (e: React.FormEvent) => {
+        const urls = files.map(file => URL.createObjectURL(file));
+        setPreviewUrls(urls);
+
+        return () => urls.forEach(url => URL.revokeObjectURL(url));
+    }, [files]);
+
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        setError(null);
 
-        if (!file) {
+        if (!files.length) {
             setError(t('upload.errors.noFile'));
             return;
         }
@@ -55,7 +61,6 @@ function UploadForm({ onUploadSuccess, onClose }: Props) {
         }
 
         const formData = new FormData();
-        formData.append('file', file);
         formData.append(
             'angel',
             new Blob(
@@ -64,21 +69,29 @@ function UploadForm({ onUploadSuccess, onClose }: Props) {
             )
         );
 
-        fetch(`${process.env.REACT_APP_API_URL}/api/angels`, {
-            method: 'POST',
-            headers: { Authorization: `Bearer ${getToken()!}` },
-            body: formData,
-            credentials: 'include'
-        })
-            .then(res => {
-                if (!res.ok) throw new Error(t('upload.errors.uploadFailed'));
-                return res.json();
-            })
-            .then(() => {
-                onUploadSuccess();
-                onClose();
-            })
-            .catch(err => setError(err.message));
+        files.forEach(file => formData.append('photos', file));
+
+        try {
+            const res = await fetch(`${process.env.REACT_APP_API_URL}/api/angels`, {
+                method: 'POST',
+                headers: { Authorization: `Bearer ${getToken()!}` },
+                body: formData,
+                credentials: 'include'
+            });
+
+            if (!res.ok) throw new Error(t('upload.errors.uploadFailed'));
+            onUploadSuccess();
+            onClose();
+        } catch (err) {
+            setError((err as Error).message);
+        }
+    };
+
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files) {
+            const selected = Array.from(e.target.files);
+            setFiles(selected);
+        }
     };
 
     const handleMouseDown = (e: React.MouseEvent) => {
@@ -96,9 +109,11 @@ function UploadForm({ onUploadSuccess, onClose }: Props) {
             <form className="upload-modal upload-form-inner" onClick={(e) => e.stopPropagation()} onSubmit={handleSubmit}>
                 <h2>{t('upload.title')}</h2>
 
-                {previewUrl && (
+                {previewUrls.length > 0 && (
                     <div className="image-preview">
-                        <img src={previewUrl} alt="Preview" />
+                        {previewUrls.map((url, idx) => (
+                            <img key={idx} src={url} alt={`Preview ${idx + 1}`} />
+                        ))}
                     </div>
                 )}
 
@@ -109,11 +124,8 @@ function UploadForm({ onUploadSuccess, onClose }: Props) {
                     <input
                         type="file"
                         accept="image/*"
-                        onChange={e => {
-                            const file = e.target.files?.[0] || null;
-                            setFile(file);
-                            setPreviewUrl(file ? URL.createObjectURL(file) : null);
-                        }}
+                        multiple
+                        onChange={handleFileChange}
                     />
                 </div>
 
@@ -169,11 +181,10 @@ function UploadForm({ onUploadSuccess, onClose }: Props) {
                         onChange={(e) => setHeight(e.target.value)}
                         onKeyDown={(e) => {
                             if (e.key === 'e' || e.key === 'E') {
-                                e.preventDefault(); // 🔒 blokada notacji naukowej
+                                e.preventDefault();
                             }
                         }}
                     />
-
                 </div>
 
                 <div className="upload-form-buttons">
