@@ -235,6 +235,7 @@ function Gallery({ filters, setFilters, setTotalElements, triggerSidebarReload }
                             .then(updated => {
                                 setSelectedAngel(updated);
                                 triggerSidebarReload();
+                                document.dispatchEvent(new CustomEvent('angelPhotosShouldRefresh'));
                             });
                     }}
                 />

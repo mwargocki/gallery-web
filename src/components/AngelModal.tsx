@@ -24,18 +24,17 @@ function AngelModal({ angel, onClose, onDelete, onEdit, isEditing = false, onPre
     const [photos, setPhotos] = useState<string[]>([]);
     const [selected, setSelected] = useState<string | null>(null);
 
-    useEffect(() => {
-        const load = async () => {
-            try {
-                const res = await fetch(`${process.env.REACT_APP_API_URL}/api/angels/${angel.id}/photos`);
-                const data = await res.json();
+    const loadPhotos = () => {
+        fetch(`${process.env.REACT_APP_API_URL}/api/angels/${angel.id}/photos`)
+            .then(res => res.json())
+            .then(data => {
                 setPhotos(data);
                 setSelected(data[0] || null);
-            } catch (e) {
-                console.error('Failed to load photos', e);
-            }
-        };
-        load();
+            });
+    };
+
+    useEffect(() => {
+        loadPhotos();
     }, [angel.id]);
 
     useEffect(() => {
@@ -47,6 +46,12 @@ function AngelModal({ angel, onClose, onDelete, onEdit, isEditing = false, onPre
         window.addEventListener('keydown', handleKeyDown);
         return () => window.removeEventListener('keydown', handleKeyDown);
     }, [onClose, onPrev, onNext, isEditing]);
+
+    useEffect(() => {
+        const listener = () => loadPhotos();
+        document.addEventListener('angelPhotosShouldRefresh', listener);
+        return () => document.removeEventListener('angelPhotosShouldRefresh', listener);
+    }, []);
 
     const handleMouseDown = (e: React.MouseEvent) => {
         if (e.target === backdropRef.current) onClose();

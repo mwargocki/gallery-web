@@ -3,7 +3,7 @@ import { Angel } from '../types';
 import { getToken } from '../utils/auth';
 import './EditAngelForm.css';
 import { useTranslation } from 'react-i18next';
-import { Palette, Hammer, Layers, Ruler } from 'lucide-react';
+import { Palette, Hammer, Layers, Ruler, Camera } from 'lucide-react';
 
 interface Props {
     angel: Angel;
@@ -17,9 +17,13 @@ function EditAngelForm({ angel, onClose, onSave }: Props) {
     const [color, setColor] = useState(angel.color);
     const [material, setMaterial] = useState(angel.material);
     const [type, setType] = useState(angel.type);
-    const [height, setHeight] = useState(angel.height.toString()); // zmiana: string
-    const [error, setError] = useState<string | null>(null);
+    const [height, setHeight] = useState(angel.height.toString());
 
+    const [existingPhotos, setExistingPhotos] = useState<string[]>([]);
+    const [newFiles, setNewFiles] = useState<File[]>([]);
+    const [previewUrls, setPreviewUrls] = useState<string[]>([]);
+
+    const [error, setError] = useState<string | null>(null);
     const [colorOptions, setColorOptions] = useState<string[]>([]);
     const [typeOptions, setTypeOptions] = useState<string[]>([]);
     const [materialOptions, setMaterialOptions] = useState<string[]>([]);
@@ -30,7 +34,15 @@ function EditAngelForm({ angel, onClose, onSave }: Props) {
         fetch(`${process.env.REACT_APP_API_URL}/api/filters/colors`).then(res => res.json()).then(setColorOptions);
         fetch(`${process.env.REACT_APP_API_URL}/api/filters/types`).then(res => res.json()).then(setTypeOptions);
         fetch(`${process.env.REACT_APP_API_URL}/api/filters/materials`).then(res => res.json()).then(setMaterialOptions);
-    }, []);
+        fetch(`${process.env.REACT_APP_API_URL}/api/angels/${angel.id}/photos`).then(res => res.json()).then(setExistingPhotos);
+    }, [angel.id]);
+
+    useEffect(() => {
+        const urls = newFiles.map(file => URL.createObjectURL(file));
+        setPreviewUrls(urls);
+
+        return () => urls.forEach(url => URL.revokeObjectURL(url));
+    }, [newFiles]);
 
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
@@ -49,8 +61,9 @@ function EditAngelForm({ angel, onClose, onSave }: Props) {
         }
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        setError(null);
 
         const parsedHeight = parseFloat(height);
         if (!height || isNaN(parsedHeight) || parsedHeight <= 0) {
@@ -58,35 +71,75 @@ function EditAngelForm({ angel, onClose, onSave }: Props) {
             return;
         }
 
-        fetch(`${process.env.REACT_APP_API_URL}/api/angels/${angel.id}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${getToken()!}`
-            },
-            body: JSON.stringify({ color, material, type, height: parsedHeight }),
-            credentials: 'include'
-        })
-            .then(res => {
-                if (!res.ok) throw new Error(t('editAngel.errors.upload'));
-                return res.json();
-            })
-            .then(() => {
-                onSave();
-                onClose();
-            })
-            .catch(err => setError(err.message));
+        try {
+            const token = getToken();
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/api/angels/${angel.id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token!}`
+                },
+                body: JSON.stringify({ color, material, type, height: parsedHeight }),
+                credentials: 'include'
+            });
+
+            if (!response.ok) throw new Error(t('editAngel.errors.upload'));
+
+            if (newFiles.length > 0) {
+                const formData = new FormData();
+                newFiles.forEach(file => formData.append('photos', file));
+
+                const photoRes = await fetch(`${process.env.REACT_APP_API_URL}/api/angels/${angel.id}/photos`, {
+                    method: 'POST',
+                    headers: {
+                        Authorization: `Bearer ${token!}`
+                    },
+                    body: formData
+                });
+
+                if (!photoRes.ok) throw new Error(t('editAngel.errors.uploadPhotos'));
+            }
+
+            onSave();
+            onClose();
+        } catch (err) {
+            setError((err as Error).message);
+        }
     };
 
     return (
-        <div
-            className="edit-modal-backdrop"
-            ref={backdropRef}
-            onMouseDown={handleMouseDown}
-        >
-            <form className="edit-modal edit-angel-form-inner" onClick={e => e.stopPropagation()} onSubmit={handleSubmit}>
+        <div className="edit-modal-backdrop" ref={backdropRef} onMouseDown={handleMouseDown}>
+            <form className="edit-modal edit-angel-form-inner" onClick={(e) => e.stopPropagation()} onSubmit={handleSubmit}>
                 <h2>{t('editAngel.title')}</h2>
+
+                <div className="edit-photos-preview">
+                    {existingPhotos.map(filename => (
+                        <img
+                            key={filename}
+                            src={`${process.env.REACT_APP_API_URL}/api/angels/${angel.id}/photos/${filename}/scaled`}
+                            alt={`${filename}`}
+                        />
+                    ))}
+                    {previewUrls.map((url, i) => (
+                        <img key={i} src={url} alt={`new-photo-${i}`} />
+                    ))}
+                </div>
+
                 {error && <p className="error">{error}</p>}
+
+                <div className="edit-form-item tight">
+                    <Camera size={20} />
+                    <input
+                        type="file"
+                        accept="image/*"
+                        multiple
+                        onChange={e => {
+                            if (e.target.files) {
+                                setNewFiles(Array.from(e.target.files));
+                            }
+                        }}
+                    />
+                </div>
 
                 <div className="edit-form-item tight">
                     <Palette size={20} />
@@ -143,17 +196,11 @@ function EditAngelForm({ angel, onClose, onSave }: Props) {
                         max="1000000"
                         placeholder={t('editAngel.height')}
                         value={height}
-                        onChange={(e) => {
-                            const value = e.target.value;
-                            setHeight(value);
-                        }}
+                        onChange={(e) => setHeight(e.target.value)}
                         onKeyDown={(e) => {
-                            if (e.key === 'e' || e.key === 'E') {
-                                e.preventDefault(); // blokuje notację naukową
-                            }
+                            if (e.key === 'e' || e.key === 'E') e.preventDefault();
                         }}
                     />
-
                 </div>
 
                 <div className="edit-angel-form-buttons">
