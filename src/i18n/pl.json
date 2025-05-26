@@ -98,7 +98,7 @@
     "fetchError": "Nie udało się pobrać aniołów",
     "notFound": "Nie znaleziono anioła",
     "deleteError": "Błąd podczas usuwania anioła",
-    "alt": "Angel - {{id}}"
+    "alt": "Anioł - {{id}}"
   },
   "color": {
     "czerwony": "Czerwony",
