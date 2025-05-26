@@ -20,6 +20,7 @@ function EditAngelForm({ angel, onClose, onSave }: Props) {
     const [height, setHeight] = useState(angel.height.toString());
 
     const [existingPhotos, setExistingPhotos] = useState<string[]>([]);
+    const [photosToDelete, setPhotosToDelete] = useState<string[]>([]);
     const [newFiles, setNewFiles] = useState<File[]>([]);
     const [previewUrls, setPreviewUrls] = useState<string[]>([]);
 
@@ -40,7 +41,6 @@ function EditAngelForm({ angel, onClose, onSave }: Props) {
     useEffect(() => {
         const urls = newFiles.map(file => URL.createObjectURL(file));
         setPreviewUrls(urls);
-
         return () => urls.forEach(url => URL.revokeObjectURL(url));
     }, [newFiles]);
 
@@ -73,6 +73,8 @@ function EditAngelForm({ angel, onClose, onSave }: Props) {
 
         try {
             const token = getToken();
+
+            // 1. Zapisz dane anioła
             const response = await fetch(`${process.env.REACT_APP_API_URL}/api/angels/${angel.id}`, {
                 method: 'PUT',
                 headers: {
@@ -85,19 +87,27 @@ function EditAngelForm({ angel, onClose, onSave }: Props) {
 
             if (!response.ok) throw new Error(t('editAngel.errors.upload'));
 
+            // 2. Wyślij nowe zdjęcia
             if (newFiles.length > 0) {
                 const formData = new FormData();
                 newFiles.forEach(file => formData.append('photos', file));
 
                 const photoRes = await fetch(`${process.env.REACT_APP_API_URL}/api/angels/${angel.id}/photos`, {
                     method: 'POST',
-                    headers: {
-                        Authorization: `Bearer ${token!}`
-                    },
+                    headers: { Authorization: `Bearer ${token!}` },
                     body: formData
                 });
 
                 if (!photoRes.ok) throw new Error(t('editAngel.errors.uploadPhotos'));
+            }
+
+            // 3. Usuń zdjęcia z serwera
+            for (const filename of photosToDelete) {
+                await fetch(`${process.env.REACT_APP_API_URL}/api/angels/${angel.id}/photos/${filename}`, {
+                    method: 'DELETE',
+                    headers: { Authorization: `Bearer ${token!}` },
+                    credentials: 'include'
+                });
             }
 
             onSave();
@@ -114,14 +124,39 @@ function EditAngelForm({ angel, onClose, onSave }: Props) {
 
                 <div className="edit-photos-preview">
                     {existingPhotos.map(filename => (
-                        <img
-                            key={filename}
-                            src={`${process.env.REACT_APP_API_URL}/api/angels/${angel.id}/photos/${filename}/scaled`}
-                            alt={`${filename}`}
-                        />
+                        <div key={filename} className="edit-photo-thumb">
+                            <img
+                                src={`${process.env.REACT_APP_API_URL}/api/angels/${angel.id}/photos/${filename}/scaled`}
+                                alt={filename}
+                            />
+                            <button
+                                type="button"
+                                className="delete-thumb"
+                                onClick={() => {
+                                    setPhotosToDelete(prev => [...prev, filename]);
+                                    setExistingPhotos(prev => prev.filter(f => f !== filename));
+                                }}
+                            >
+                                ✕
+                            </button>
+                        </div>
                     ))}
+
                     {previewUrls.map((url, i) => (
-                        <img key={i} src={url} alt={`new-photo-${i}`} />
+                        <div key={i} className="edit-photo-thumb">
+                            <img src={url} alt={`new-${i}`} />
+                            <button
+                                type="button"
+                                className="delete-thumb"
+                                onClick={() => {
+                                    const newList = [...newFiles];
+                                    newList.splice(i, 1);
+                                    setNewFiles(newList);
+                                }}
+                            >
+                                ✕
+                            </button>
+                        </div>
                     ))}
                 </div>
 
@@ -151,9 +186,7 @@ function EditAngelForm({ angel, onClose, onSave }: Props) {
                     />
                 </div>
                 <datalist id="colors">
-                    {colorOptions.map(option => (
-                        <option key={option} value={option} />
-                    ))}
+                    {colorOptions.map(option => <option key={option} value={option} />)}
                 </datalist>
 
                 <div className="edit-form-item tight">
@@ -166,9 +199,7 @@ function EditAngelForm({ angel, onClose, onSave }: Props) {
                     />
                 </div>
                 <datalist id="materials">
-                    {materialOptions.map(option => (
-                        <option key={option} value={option} />
-                    ))}
+                    {materialOptions.map(option => <option key={option} value={option} />)}
                 </datalist>
 
                 <div className="edit-form-item tight">
@@ -181,9 +212,7 @@ function EditAngelForm({ angel, onClose, onSave }: Props) {
                     />
                 </div>
                 <datalist id="types">
-                    {typeOptions.map(option => (
-                        <option key={option} value={option} />
-                    ))}
+                    {typeOptions.map(option => <option key={option} value={option} />)}
                 </datalist>
 
                 <div className="edit-form-item tight">
