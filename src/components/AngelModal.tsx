@@ -24,7 +24,8 @@ function AngelModal({ angel, onClose, onDelete, onEdit, isEditing = false, onPre
     const [photos, setPhotos] = useState<string[]>([]);
     const [selected, setSelected] = useState<string | null>(null);
 
-    const loadPhotos = () => {
+    let loadPhotos: () => void;
+    loadPhotos = () => {
         fetch(`${process.env.REACT_APP_API_URL}/api/angels/${angel.id}/photos`)
             .then(res => res.json())
             .then(data => {
