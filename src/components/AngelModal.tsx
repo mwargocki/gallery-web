@@ -35,7 +35,7 @@ function AngelModal({ angel, onClose, onDelete, onEdit, isEditing = false, onPre
 
     useEffect(() => {
         loadPhotos();
-    }, [angel.id]);
+    }, [angel.id, loadPhotos]);
 
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
@@ -51,7 +51,7 @@ function AngelModal({ angel, onClose, onDelete, onEdit, isEditing = false, onPre
         const listener = () => loadPhotos();
         document.addEventListener('angelPhotosShouldRefresh', listener);
         return () => document.removeEventListener('angelPhotosShouldRefresh', listener);
-    }, []);
+    }, [loadPhotos]);
 
     const handleMouseDown = (e: React.MouseEvent) => {
         if (e.target === backdropRef.current) onClose();
