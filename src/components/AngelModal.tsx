@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import './AngelModal.css';
 import { Angel } from '../types';
 import { isLoggedIn } from '../utils/auth';
@@ -17,26 +17,39 @@ interface Props {
     onNext?: () => void;
 }
 
-function AngelModal({ angel, onClose, onDelete, onEdit, isEditing = false, onPrev, onNext }: Props) {
+function AngelModal({
+                        angel,
+                        onClose,
+                        onDelete,
+                        onEdit,
+                        isEditing = false,
+                        onPrev,
+                        onNext
+                    }: Props) {
     const { t } = useTranslation();
     const backdropRef = useRef<HTMLDivElement>(null);
 
     const [photos, setPhotos] = useState<string[]>([]);
     const [selected, setSelected] = useState<string | null>(null);
 
-    let loadPhotos: () => void;
-    loadPhotos = () => {
+    const loadPhotos = useCallback(() => {
         fetch(`${process.env.REACT_APP_API_URL}/api/angels/${angel.id}/photos`)
-            .then(res => res.json())
+            .then(res => {
+                if (!res.ok) throw new Error('Failed to fetch photos');
+                return res.json();
+            })
             .then(data => {
                 setPhotos(data);
                 setSelected(data[0] || null);
+            })
+            .catch(err => {
+                console.error('Error loading photos:', err);
             });
-    };
+    }, [angel.id]);
 
     useEffect(() => {
         loadPhotos();
-    }, [angel.id, loadPhotos]);
+    }, [loadPhotos]);
 
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
